@@ -1,0 +1,44 @@
+# Python
+__pycache__/
+*.py[cod]
+*$py.class
+*.so
+.Python
+env/
+build/
+develop-eggs/
+dist/
+downloads/
+eggs/
+.eggs/
+lib/
+lib64/
+parts/
+sdist/
+var/
+wheels/
+*.egg-info/
+.installed.cfg
+*.egg
+
+# Virtual environments
+venv/
+.venv/
+ENV/
+
+# Datasets and Large Runs / Models
+dataset/
+runs/
+*.zip
+*.tar.gz
+waste-classification-new-1/
+
+# Base pretrained weights (keep app weights if needed)
+yolov8s.pt
+yolo26n.pt
+
+# Streamlit & IDE
+.streamlit/secrets.toml
+.vscode/
+.idea/
+.DS_Store
