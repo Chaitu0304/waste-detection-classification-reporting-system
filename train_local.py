@@ -49,24 +49,49 @@ def main():
         last_ckpt = max(last_ckpt_candidates, key=lambda p: p.stat().st_mtime)
         print(f"[INFO] Resuming training from latest checkpoint: {last_ckpt}")
         model = YOLO(str(last_ckpt))
+        is_resume = True
     else:
         print("[INFO] Loading YOLOv8s base model...")
         model = YOLO("yolov8s.pt")
+        is_resume = False
+
+    TARGET_EPOCH = 80
+
+    def check_epoch_stop(trainer):
+        current_global_epoch = trainer.start_epoch + trainer.epoch + 1
+        print(f"\n[EPOCH TRACKER] Current Epoch: {current_global_epoch} / {TARGET_EPOCH}")
+        if current_global_epoch >= TARGET_EPOCH:
+            print(f"[INFO] Target Epoch {TARGET_EPOCH} completed! Stopping training cleanly...")
+            trainer.stop = True
+
+    model.add_callback("on_train_epoch_end", check_epoch_stop)
 
     # High-Speed Train Configuration (imgsz=640, batch=32 for ~4x speedup)
-    print("[INFO] Resuming training for up to 100 epochs (imgsz=640, batch=32 for 4x speed)...")
-    results = model.train(
-        data=str(data_yaml),
-        epochs=100,
-        imgsz=640,
-        batch=32,
-        patience=20,
-        workers=0,  # Fixes Windows multiprocessing memory paging error (WinError 1455)
-        device=device,
-        project="runs/detect/runs/detect",
-        name="local_waste_train",
-        exist_ok=True
-    )
+    print(f"[INFO] Training target set to overall Epoch {TARGET_EPOCH}...")
+    if is_resume:
+        results = model.train(
+            resume=True,
+            batch=16,
+            cls=1.5,       # 3x boost to classification loss to penalize Glass/Plastic/Bio misclassification
+            hsv_s=0.7,     # Saturation augmentation to learn material specular highlights
+            mixup=0.15     # Blends images to teach texture invariance across transparent objects
+        )
+    else:
+        results = model.train(
+            data=str(data_yaml),
+            epochs=TARGET_EPOCH,
+            imgsz=640,
+            batch=16,
+            cls=1.5,       # 3x boost to classification loss
+            hsv_s=0.7,     # Saturation augmentation
+            mixup=0.15,    # Mixup augmentation
+            patience=20,
+            workers=0,     # Fixes Windows multiprocessing memory paging error
+            device=device,
+            project="runs/detect/runs/detect",
+            name="local_waste_train",
+            exist_ok=True
+        )
 
     print("\n[SUCCESS] Training completed successfully!")
     best_weights_candidates = [p for p in Path("runs").rglob("best.pt") if p.is_file()]

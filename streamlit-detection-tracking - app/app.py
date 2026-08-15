@@ -30,9 +30,9 @@ model_type = st.sidebar.radio(
     "Select Task", ['Detection'])
 
 confidence = float(st.sidebar.slider(
-    "Select Model Confidence Threshold", 10, 100, 15)) / 100
+    "Select Model Confidence Threshold", 5, 100, 10)) / 100
 
-st.sidebar.caption("💡 *Lower confidence threshold (10%-25%) helps detect smaller, cluttered, or AI-generated garbage objects.*")
+st.sidebar.caption("💡 *Lower confidence threshold (5%-20%) helps detect small, transparent (glass/plastic), or low-contrast waste objects.*")
 
 # Selecting Detection Or Segmentation
 if model_type == 'Detection':
