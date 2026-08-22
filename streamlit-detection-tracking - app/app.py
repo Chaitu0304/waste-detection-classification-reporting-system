@@ -2,6 +2,8 @@
 from pathlib import Path
 import PIL
 import pandas as pd
+import smtplib
+from email.message import EmailMessage
 
 # External packages
 import streamlit as st
@@ -87,7 +89,7 @@ if source_radio == settings.IMAGE:
                 boxes = res[0].boxes
                 res_plotted = res[0].plot()[:, :, ::-1]
                 st.image(res_plotted, caption='Detection Results', use_container_width=True)
-                
+
                 # Analyze detection results
                 try:
                     stats = {}
@@ -95,7 +97,7 @@ if source_radio == settings.IMAGE:
                         class_id = int(box.cls[0])
                         class_name = model.names[class_id]
                         conf_score = float(box.conf[0])
-                        
+
                         if class_name not in stats:
                             stats[class_name] = {'count': 0, 'conf_sum': 0.0}
                         stats[class_name]['count'] += 1
@@ -103,7 +105,7 @@ if source_radio == settings.IMAGE:
 
                     if stats:
                         st.subheader("📊 Waste Classification Summary & Analytics")
-                        
+
                         total_items = sum(item['count'] for item in stats.values())
                         unique_cats = len(stats)
                         top_cat = max(stats.items(), key=lambda x: x[1]['count'])[0]
@@ -123,15 +125,21 @@ if source_radio == settings.IMAGE:
                                 'Quantity': data['count'],
                                 'Avg Confidence (%)': f"{avg_conf:.1f}%"
                             })
-                        
+
                         df = pd.DataFrame(table_data)
-                        
+
+                        st.session_state["waste_report_df"] = df.copy()
+                        st.session_state["waste_report_csv"] = df.to_csv(index=False).encode("utf-8")
+                        st.session_state["waste_report_total"] = total_items
+                        st.session_state["waste_report_categories"] = unique_cats
+                        st.session_state["waste_report_dominant"] = top_cat
+
                         # Layout layout splits: Table + Bar Chart
                         col_tbl, col_chart = st.columns([1, 1])
                         with col_tbl:
                             st.write("##### Detailed Breakdown")
                             st.dataframe(df, use_container_width=True)
-                            
+
                         with col_chart:
                             st.write("##### Category Distribution")
                             chart_df = pd.DataFrame({
@@ -148,16 +156,67 @@ if source_radio == settings.IMAGE:
                             file_name="waste_classification_report.csv",
                             mime="text/csv",
                         )
-                        
-                        # Admin reporting feature
-                        if st.button("🔔 Dispatch Report to Waste Admin Console"):
-                            st.success("✅ Waste report successfully dispatched to Admin Console!")
-                            st.toast("Report dispatched to waste management system.", icon="📨")
+
+
+
                     else:
                         st.info("No waste items detected based on the selected confidence threshold. Try lowering the threshold in the sidebar!")
                 except Exception as ex:
                     st.error("Error generating waste report.")
                     st.error(ex)
+
+            # Admin reporting feature
+            if "waste_report_df" in st.session_state:
+                if st.button("🔔 Dispatch Report to Waste Admin Console"):
+                    try:
+                        sender_email = st.secrets["email"]["sender"]
+                        sender_password = st.secrets["email"]["password"]
+                        admin_email = st.secrets["email"]["admin"]
+
+                        report_df = st.session_state["waste_report_df"]
+                        report_csv = st.session_state["waste_report_csv"]
+                        report_total = st.session_state["waste_report_total"]
+                        report_categories = st.session_state["waste_report_categories"]
+                        report_dominant = st.session_state["waste_report_dominant"]
+
+                        msg = EmailMessage()
+                        msg["Subject"] = "Waste Detection Report"
+                        msg["From"] = sender_email
+                        msg["To"] = admin_email
+
+                        report_text = report_df.to_string(index=False)
+
+                        msg.set_content(
+                            f"""Waste Detection Report
+
+            Total Waste Items Detected: {report_total}
+            Unique Waste Categories: {report_categories}
+            Dominant Waste Category: {report_dominant}
+
+            Detailed Breakdown:
+            {report_text}
+
+            The detailed CSV report is attached to this email.
+            """
+                        )
+
+                        msg.add_attachment(
+                            report_csv,
+                            maintype="text",
+                            subtype="csv",
+                            filename="waste_classification_report.csv"
+                        )
+
+                        with smtplib.SMTP_SSL("smtp.gmail.com", 465) as smtp:
+                            smtp.login(sender_email, sender_password)
+                            smtp.send_message(msg)
+
+                        st.success("✅ Waste report successfully sent to the admin email!")
+                        st.toast("Report emailed successfully.", icon="📧")
+
+                    except Exception as ex:
+                        st.error("❌ Failed to send the waste report.")
+                        st.error(str(ex))
 
 elif source_radio == settings.VIDEO:
     helper.play_stored_video(confidence, model)
