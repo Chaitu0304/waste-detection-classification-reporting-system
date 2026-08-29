@@ -1,0 +1,9 @@
+Item_ID,Category,Confidence,Type
+IMAGE_1-01,PLASTIC,0.94,Recyclable (Dry Waste)
+IMAGE_1-02,PLASTIC,0.88,Recyclable (Dry Waste)
+IMAGE_1-03,GLASS,0.91,Recyclable (Bottles/Jars)
+IMAGE_1-04,BIODEGRADABLE,0.85,Organic / Wet Compost
+IMAGE_1-05,BIODEGRADABLE,0.79,Organic / Wet Compost
+IMAGE_1-06,METAL,0.92,Recyclable (Scrap/Can)
+IMAGE_1-07,CARDBOARD,0.86,Recyclable (Dry Paperboard)
+IMAGE_1-08,PAPER,0.76,Recyclable (Clean Paper)
