@@ -20,13 +20,30 @@ def load_model(model_path):
 
 
 def display_tracker_options():
-    display_tracker = st.radio("Display Tracker", ('Yes', 'No'))
-    is_display_tracker = True if display_tracker == 'Yes' else False
-    if is_display_tracker:
-        tracker_type = st.radio("Tracker", ("bytetrack.yaml", "botsort.yaml"))
-        return is_display_tracker, tracker_type
-    return is_display_tracker, None
+    """
+    Display object tracking controls in the main application area.
+    """
 
+    st.markdown("### 🎯 Tracking Options")
+
+    display_tracker = st.radio(
+        "Enable Object Tracking",
+        ("No", "Yes"),
+        horizontal=True
+    )
+
+    is_display_tracker = display_tracker == "Yes"
+
+    if is_display_tracker:
+
+        tracker_type = st.selectbox(
+            "Tracking Algorithm",
+            ("bytetrack.yaml", "botsort.yaml")
+        )
+
+        return True, tracker_type
+
+    return False, None
 
 def _display_detected_frames(conf, model, st_frame, image, is_display_tracking=None, tracker=None):
     """
@@ -62,18 +79,19 @@ def _display_detected_frames(conf, model, st_frame, image, is_display_tracking=N
                    )
 
 
-def play_youtube_video(conf, model):
+def play_youtube_video(conf, model,source_youtube=None):
     """
     Plays a YouTube video stream and detects objects in real-time.
     """
-    source_youtube = st.sidebar.text_input("YouTube Video URL")
+    if source_youtube is None:
+        source_youtube = st.session_state.get(
+            "youtube_url",
+            ""
+        )
 
     is_display_tracker, tracker = display_tracker_options()
 
-    if st.sidebar.button('Detect Trash'):
-        if not source_youtube:
-            st.sidebar.warning("Please enter a valid YouTube URL.")
-            return
+    if source_youtube:
         try:
             # pyrefly: ignore [missing-import]
             import pafy
@@ -98,16 +116,17 @@ def play_youtube_video(conf, model):
             st.sidebar.error("Error loading YouTube video: " + str(e))
 
 
-def play_rtsp_stream(conf, model):
+def play_rtsp_stream(conf, model,source_rtsp=None):
     """
     Plays an RTSP stream and detects objects in real-time.
     """
-    source_rtsp = st.sidebar.text_input("RTSP stream URL")
+    if source_rtsp is None:
+        source_rtsp = st.session_state.get(
+            "rtsp_url",
+            ""
+        )
     is_display_tracker, tracker = display_tracker_options()
-    if st.sidebar.button('Detect Trash'):
-        if not source_rtsp:
-            st.sidebar.warning("Please enter a valid RTSP URL.")
-            return
+    if source_rtsp:
         try:
             vid_cap = cv2.VideoCapture(source_rtsp)
             st_frame = st.empty()
@@ -128,32 +147,59 @@ def play_rtsp_stream(conf, model):
             st.sidebar.error("Error loading RTSP stream: " + str(e))
 
 
-def play_webcam(conf, model):
+def play_webcam(conf, model, start_webcam=False):
+
     """
-    Plays a webcam stream. Detects Objects in real-time using the YOLOv8 object detection model.
+    Plays a webcam stream.
+    Detects objects in real-time using the YOLOv8 object detection model.
     """
+
     source_webcam = settings.WEBCAM_PATH
+
     is_display_tracker, tracker = display_tracker_options()
-    if st.sidebar.button('Detect Trash'):
+
+    if start_webcam:
+
         try:
+
             vid_cap = cv2.VideoCapture(source_webcam)
+
+            if not vid_cap.isOpened():
+                st.error("❌ Unable to access the webcam.")
+                return
+
             st_frame = st.empty()
-            while (vid_cap.isOpened()):
+
+            while vid_cap.isOpened():
+
                 success, image = vid_cap.read()
+
                 if success:
-                    _display_detected_frames(conf,
-                                             model,
-                                             st_frame,
-                                             image,
-                                             is_display_tracker,
-                                             tracker,
-                                             )
+
+                    _display_detected_frames(
+                        conf,
+                        model,
+                        st_frame,
+                        image,
+                        is_display_tracker,
+                        tracker,
+                    )
+
                 else:
+
                     vid_cap.release()
                     break
-        except Exception as e:
-            st.sidebar.error("Error loading webcam stream: " + str(e))
 
+        except Exception as e:
+
+            st.error(
+                "Error loading webcam stream: " + str(e)
+            )
+
+        finally:
+
+            if 'vid_cap' in locals():
+                vid_cap.release()
 
 def play_stored_video(conf, model):
     """
