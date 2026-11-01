@@ -25,7 +25,7 @@ def display_tracker_options():
     Display object tracking controls in the main application area.
     """
 
-    st.markdown("### 🎯 Tracking Options")
+    st.markdown("### Tracking Options")
 
     display_tracker = st.radio(
         "Enable Object Tracking",
@@ -167,7 +167,7 @@ def play_webcam(conf, model, start_webcam=False):
             vid_cap = cv2.VideoCapture(source_webcam)
 
             if not vid_cap.isOpened():
-                st.error("❌ Unable to access the webcam.")
+                st.error("Unable to access the webcam.")
                 return
 
             st_frame = st.empty()
