@@ -52,7 +52,7 @@ VIDEOS_DICT = {
 MODEL_DIR = root_path / 'weights'
 
 AVAILABLE_MODELS = {
-    "🌟 Smart Hybrid AI (Best Accuracy - Two-Stage)": {
+    "Smart Hybrid AI (Two-Stage Fusion)": {
         "path": Path("hybrid"),
         "filename": "Smart Hybrid AI (Two-Stage)",
         "description": "Two-stage precision detector: COCO object localization + focused waste material classification. Eliminates dirt hallucinations and resolves Glass/Metal/Plastic."

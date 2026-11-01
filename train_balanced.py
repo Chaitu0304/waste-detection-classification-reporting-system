@@ -6,7 +6,7 @@ from ultralytics import YOLO
 
 def main():
     print("=" * 60)
-    print("🚀 Starting YOLOv8 Fine-Tuning on Rebalanced Waste Dataset (6 Classes)")
+    print("Starting YOLOv8 Fine-Tuning on Rebalanced Waste Dataset (6 Classes)")
     print("=" * 60)
 
     # 1. GPU Check
@@ -46,7 +46,7 @@ def main():
         workers=0      # Safe multi-processing for Windows
     )
 
-    print("\n🎉 Balanced Fine-Tuning Completed Successfully!")
+    print("\nBalanced Fine-Tuning Completed Successfully!")
     
     best_pt = base_dir / "runs" / "detect" / "balanced_waste_train" / "weights" / "best.pt"
     if best_pt.exists():

@@ -30,7 +30,7 @@ st.set_page_config(
 
     page_title="WasteAI | Smart Waste Detection",
 
-    page_icon="♻️",
+    page_icon=None,
 
     layout="wide",
 
@@ -6301,6 +6301,16 @@ section[data-testid="stSidebar"] {
    touch targets, and navigation bar.
    ============================================================ */
 
+/* Desktop Screens (screen width >= 769px): Hide mobile navigation toggler and drawer */
+@media screen and (min-width: 769px) {
+    div[data-testid="stHorizontalBlock"]:has(button[key="mobile_menu_toggler_btn"]),
+    div[data-testid="stElementContainer"]:has(.nav-mobile-marker),
+    div[data-testid="stElementContainer"]:has(.mobile-menu-drawer-marker),
+    div[data-testid="stElementContainer"]:has(button[key^="m_nav_"]) {
+        display: none !important;
+    }
+}
+
 /* Mobile & Small Tablets (screen width <= 768px) */
 @media screen and (max-width: 768px) {
     /* 1. Global Viewport & Container Reset */
@@ -6320,78 +6330,81 @@ section[data-testid="stSidebar"] {
         width: 100% !important;
     }
 
-    /* 2. Top Navigation Bar: Swipeable Horizontal Pill Bar */
-    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) {
+    /* 2. Hide Desktop Navigation on Mobile */
+    div[data-testid="stHorizontalBlock"]:has(button[key^="d_nav_"]),
+    div[data-testid="stElementContainer"]:has(.nav-desktop-marker) {
+        display: none !important;
+    }
+
+    /* 3. Mobile Top Bar (Brand + Menu Toggler) */
+    div[data-testid="stHorizontalBlock"]:has(button[key="mobile_menu_toggler_btn"]) {
         display: flex !important;
         flex-direction: row !important;
         flex-wrap: nowrap !important;
-        overflow-x: auto !important;
-        overflow-y: hidden !important;
-        -webkit-overflow-scrolling: touch !important;
-        scrollbar-width: none !important;
-        gap: 8px !important;
-        padding: 4px 2px 10px 2px !important;
         align-items: center !important;
-        margin-bottom: 12px !important;
+        justify-content: space-between !important;
+        padding: 4px 0px 8px 0px !important;
+        margin-bottom: 8px !important;
         width: 100% !important;
+        border-bottom: 1px solid #e2ebe6 !important;
     }
 
-    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"])::-webkit-scrollbar {
-        display: none !important;
-    }
-
-    /* Brand Logo / Title in Top Bar */
-    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) > div[data-testid="column"]:first-child {
-        flex: 0 0 auto !important;
-        min-width: 120px !important;
+    div[data-testid="stHorizontalBlock"]:has(button[key="mobile_menu_toggler_btn"]) > div[data-testid="column"]:first-child {
+        flex: 1 1 auto !important;
+        min-width: 0 !important;
         width: auto !important;
-        margin-right: 4px !important;
-    }
-
-    .wa-top-brand {
-        height: 44px !important;
-        gap: 8px !important;
-        padding-left: 0px !important;
-    }
-
-    .wa-top-logo {
-        width: 34px !important;
-        height: 34px !important;
-        font-size: 18px !important;
-        border-radius: 9px !important;
-    }
-
-    .wa-top-brand-name {
-        font-size: 17px !important;
-        letter-spacing: -0.3px !important;
-    }
-
-    .wa-top-brand-subtitle {
-        display: none !important;
-    }
-
-    /* Navigation Buttons: Comfortable Rounded Chips */
-    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) > div[data-testid="column"]:not(:first-child) {
-        flex: 0 0 auto !important;
-        min-width: max-content !important;
-        width: auto !important;
-    }
-
-    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) button {
-        white-space: nowrap !important;
-        border-radius: 999px !important;
-        padding: 8px 16px !important;
-        font-size: 13px !important;
-        font-weight: 600 !important;
-        min-height: 40px !important;
-        height: 40px !important;
-        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
-        border: 1px solid #d8e5de !important;
-        background: #ffffff !important;
-        color: #17352b !important;
-        display: inline-flex !important;
+        display: flex !important;
         align-items: center !important;
-        justify-content: center !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[key="mobile_menu_toggler_btn"]) > div[data-testid="column"]:last-child {
+        flex: 0 0 100px !important;
+        width: 100px !important;
+        min-width: 100px !important;
+        max-width: 100px !important;
+        display: flex !important;
+        justify-content: flex-end !important;
+    }
+
+    button[key="mobile_menu_toggler_btn"] {
+        white-space: nowrap !important;
+        border-radius: 10px !important;
+        padding: 6px 14px !important;
+        font-size: 13px !important;
+        font-weight: 700 !important;
+        min-height: 38px !important;
+        height: 38px !important;
+        width: 100% !important;
+        border: 1.5px solid #2e7d32 !important;
+        box-shadow: 0 2px 6px rgba(46, 125, 50, 0.12) !important;
+    }
+
+    /* 4. Mobile Menu Drawer */
+    div[data-testid="stElementContainer"]:has(.mobile-menu-drawer-marker) {
+        display: block !important;
+        margin-bottom: 6px !important;
+    }
+
+    div[data-testid="stElementContainer"]:has(button[key^="m_nav_"]) {
+        display: block !important;
+        width: 100% !important;
+        margin-bottom: 6px !important;
+    }
+
+    button[key^="m_nav_"] {
+        white-space: nowrap !important;
+        width: 100% !important;
+        min-height: 44px !important;
+        height: 44px !important;
+        font-size: 14px !important;
+        font-weight: 650 !important;
+        border-radius: 12px !important;
+        padding: 8px 16px !important;
+        justify-content: flex-start !important;
+        text-align: left !important;
+        display: flex !important;
+        align-items: center !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.04) !important;
     }
 
     .wa-top-divider {
@@ -6399,8 +6412,8 @@ section[data-testid="stSidebar"] {
         margin-bottom: 16px !important;
     }
 
-    /* 3. Universal Column Stacking for all multi-column layouts */
-    div[data-testid="stHorizontalBlock"]:not(:has(button[key^="top_nav_"])) {
+    /* 5. Universal Column Stacking for all multi-column layouts EXCEPT the mobile nav bar */
+    div[data-testid="stHorizontalBlock"]:not(:has(button[key="mobile_menu_toggler_btn"])):not(:has(button[key^="d_nav_"])) {
         display: flex !important;
         flex-direction: column !important;
         flex-wrap: wrap !important;
@@ -6408,7 +6421,7 @@ section[data-testid="stSidebar"] {
         width: 100% !important;
     }
 
-    div[data-testid="stHorizontalBlock"]:not(:has(button[key^="top_nav_"])) > div[data-testid="column"] {
+    div[data-testid="stHorizontalBlock"]:not(:has(button[key="mobile_menu_toggler_btn"])):not(:has(button[key^="d_nav_"])) > div[data-testid="column"] {
         width: 100% !important;
         min-width: 100% !important;
         max-width: 100% !important;
@@ -6675,169 +6688,92 @@ section[data-testid="stSidebar"] {
 
 
 
-pages = [
+PAGES = ["Home", "Dashboard", "Detection", "Analytics", "Reports", "Settings"]
 
-    ("🏠", "Home"),
+if "page" not in st.session_state or st.session_state.page not in PAGES:
+    st.session_state.page = "Home"
 
-    ("📊", "Dashboard"),
-
-    ("🔍", "Detection"),
-
-    ("📈", "Analytics"),
-
-    ("📄", "Reports"),
-
-    ("⚙️", "Settings")
-
-]
-
-
-
-page_labels = [
-
-    f"{icon} {name}"
-
-    for icon, name in pages
-
-]
-
-
-
-
+if "mobile_menu_open" not in st.session_state:
+    st.session_state.mobile_menu_open = False
 
 # ============================================================
-
-# DEFAULT PAGE
-
+# TOP NAVIGATION (RESPONSIVE: DESKTOP BAR + MOBILE TOGGLER)
 # ============================================================
 
+# --- DESKTOP NAVIGATION ---
+st.html('<div class="nav-desktop-marker"></div>')
+d_nav_cols = st.columns([2.4, 1, 1, 1, 1, 1, 1])
 
-
-if "page" not in st.session_state:
-
-    st.session_state.page = "🏠 Home"
-
-
-
-
-
-# ============================================================
-
-# TOP NAVIGATION
-
-# ============================================================
-
-
-
-nav_columns = st.columns([2.2, 1, 1, 1, 1, 1, 1])
-
-
-
-# ------------------------------------------------------------
-
-# BRAND
-
-# ------------------------------------------------------------
-
-
-
-with nav_columns[0]:
-
-
-
-    st.html(
-
-        """
-
-        <div class="wa-top-brand">
-
-
-
-            <div class="wa-top-logo">
-
-                ♻
-
-            </div>
-
-
-
-            <div>
-
-                <div class="wa-top-brand-name">
-
-                    WasteAI
-
-                </div>
-
-
-
-                <div class="wa-top-brand-subtitle">
-
-                    Smart Waste Intelligence
-
-                </div>
-
-            </div>
-
-
-
+with d_nav_cols[0]:
+    st.html("""
+    <div class="wa-top-brand">
+        <div class="wa-top-logo">
+            <svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="#176044" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/>
+                <path d="M11 19h8.2a1.8 1.8 0 0 0 1.57-.88 1.8 1.8 0 0 0 0-1.78L17 10"/>
+                <path d="m14 14 3-3 3 3"/>
+                <path d="m11 5 3-3 3 3"/>
+                <path d="M14 2v6"/>
+                <path d="m6 16-3 3 3 3"/>
+            </svg>
         </div>
+        <div>
+            <div class="wa-top-brand-name">WasteAI</div>
+            <div class="wa-top-brand-subtitle">Waste Intelligence Platform</div>
+        </div>
+    </div>
+    """)
 
-        """
-
-    )
-
-
-
-
-
-# ------------------------------------------------------------
-
-# NAVIGATION BUTTONS
-
-# ------------------------------------------------------------
-
-
-
-for i, (icon, name) in enumerate(pages):
-
-
-
-    with nav_columns[i + 1]:
-
-
-
-        label = f"{icon} {name}"
-
-
-
-        if st.button(
-
-            label,
-
-            key=f"top_nav_{name.lower()}",
-
-            use_container_width=True
-
-        ):
-
-
-
-            st.session_state.page = label
-
+for i, p_name in enumerate(PAGES):
+    with d_nav_cols[i + 1]:
+        is_cur = (st.session_state.page == p_name)
+        b_type = "primary" if is_cur else "secondary"
+        if st.button(p_name, key=f"d_nav_{p_name.lower()}", type=b_type, width="stretch"):
+            st.session_state.page = p_name
             st.rerun()
 
+# --- MOBILE NAVIGATION WITH MENU TOGGLER ---
+st.html('<div class="nav-mobile-marker"></div>')
+m_nav_col1, m_nav_col2 = st.columns([2.4, 1.6])
 
+with m_nav_col1:
+    st.html("""
+    <div class="wa-top-brand">
+        <div class="wa-top-logo">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#176044" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/>
+                <path d="M11 19h8.2a1.8 1.8 0 0 0 1.57-.88 1.8 1.8 0 0 0 0-1.78L17 10"/>
+                <path d="m14 14 3-3 3 3"/>
+                <path d="m11 5 3-3 3 3"/>
+                <path d="M14 2v6"/>
+                <path d="m6 16-3 3 3 3"/>
+            </svg>
+        </div>
+        <div class="wa-top-brand-name">WasteAI</div>
+    </div>
+    """)
 
+with m_nav_col2:
+    is_open = st.session_state.get("mobile_menu_open", False)
+    tog_label = "Close" if is_open else "Menu"
+    tog_type = "primary" if is_open else "secondary"
+    if st.button(tog_label, key="mobile_menu_toggler_btn", type=tog_type, width="stretch"):
+        st.session_state.mobile_menu_open = not is_open
+        st.rerun()
 
-
-# ------------------------------------------------------------
-
-# NAVIGATION DIVIDER
-
-# ------------------------------------------------------------
-
-
+# Mobile Menu Drawer
+if st.session_state.get("mobile_menu_open", False):
+    st.html('<div class="mobile-menu-drawer-marker"></div>')
+    m_drawer = st.container()
+    with m_drawer:
+        for p_name in PAGES:
+            is_cur = (st.session_state.page == p_name)
+            b_type = "primary" if is_cur else "secondary"
+            active_marker = "  [Active]" if is_cur else ""
+            if st.button(f"{p_name}{active_marker}", key=f"m_nav_{p_name.lower()}", type=b_type, width="stretch"):
+                st.session_state.page = p_name
+                st.session_state.mobile_menu_open = False
+                st.rerun()
 
 st.html(
 
@@ -6893,7 +6829,7 @@ except Exception as ex:
 
 
 
-if page == "🏠 Home":
+if page == "Home":
 
 
 
@@ -6919,7 +6855,7 @@ if page == "🏠 Home":
 
                 <div class="home-badge">
 
-                    ♻️ WASTEAI &nbsp;•&nbsp; AI-POWERED WASTE INTELLIGENCE
+                    WASTEAI &nbsp;•&nbsp; AI-POWERED WASTE INTELLIGENCE
 
                 </div>
 
@@ -6959,7 +6895,7 @@ if page == "🏠 Home":
 
 
 
-                    <div class="visual-icon">♻️</div>
+                    <div class="visual-icon"><svg width="32" height="32" viewBox="0 0 24 24" fill="none" stroke="#176044" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/><path d="M11 19h8.2a1.8 1.8 0 0 0 1.57-.88 1.8 1.8 0 0 0 0-1.78L17 10"/><path d="m14 14 3-3 3 3"/><path d="m11 5 3-3 3 3"/><path d="M14 2v6"/><path d="m6 16-3 3 3 3"/></svg></div>
 
 
 
@@ -7057,7 +6993,7 @@ if page == "🏠 Home":
 
         if st.button(
 
-            "🔍  Start Waste Detection",
+            "Start Waste Detection",
 
             type="primary",
 
@@ -7067,7 +7003,7 @@ if page == "🏠 Home":
 
         ):
 
-            st.session_state.page = "🔍 Detection"
+            st.session_state.page = "Detection"
 
             st.rerun()
 
@@ -7079,7 +7015,7 @@ if page == "🏠 Home":
 
         if st.button(
 
-            "📊  View Dashboard",
+            "View Dashboard",
 
             use_container_width=True,
 
@@ -7087,7 +7023,7 @@ if page == "🏠 Home":
 
         ):
 
-            st.session_state.page = "📊 Dashboard"
+            st.session_state.page = "Dashboard"
 
             st.rerun()
 
@@ -7135,7 +7071,7 @@ if page == "🏠 Home":
 
         (
 
-            "🔍",
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg>',
 
             "Detect Waste",
 
@@ -7145,7 +7081,7 @@ if page == "🏠 Home":
 
         (
 
-            "🗂️",
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
 
             "Classify Materials",
 
@@ -7155,7 +7091,7 @@ if page == "🏠 Home":
 
         (
 
-            "📊",
+            '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg>',
 
             "Analyze Results",
 
@@ -7249,13 +7185,13 @@ if page == "🏠 Home":
 
     inputs = [
 
-        ("📷", "Images", "Analyze uploaded waste images."),
+        ("Image", "Images", "Analyze uploaded waste images."),
 
-        ("🎥", "Videos", "Process recorded video files."),
+        ("Video", "Videos", "Process recorded video files."),
 
-        ("📹", "Live Camera", "Detect waste in real time."),
+        ("Camera", "Live Camera", "Detect waste in real time."),
 
-        ("🌐", "Live Streams", "Analyze network video streams.")
+        ("Stream", "Live Streams", "Analyze network video streams.")
 
     ]
 
@@ -7387,7 +7323,7 @@ if page == "🏠 Home":
 
 
 
-elif page == "📊 Dashboard":
+elif page == "Dashboard":
 
 
 
@@ -7821,11 +7757,7 @@ elif page == "📊 Dashboard":
 
 
 
-                        <div class="dashboard-activity-icon">
-
-                            ♻
-
-                        </div>
+                        <div class="dashboard-activity-icon"><svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path></svg></div>
 
 
 
@@ -7881,11 +7813,7 @@ elif page == "📊 Dashboard":
 
 
 
-                    <div class="dashboard-empty-icon">
-
-                        ◌
-
-                    </div>
+                    <div class="dashboard-empty-icon"><svg width="36" height="36" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></div>
 
 
 
@@ -8085,7 +8013,7 @@ elif page == "📊 Dashboard":
 
         if st.button(
 
-            "🔍  Start Detection",
+            "Start Detection",
 
             type="primary",
 
@@ -8097,7 +8025,7 @@ elif page == "📊 Dashboard":
 
 
 
-            st.session_state.page = "🔍 Detection"
+            st.session_state.page = "Detection"
 
             st.rerun()
 
@@ -8111,7 +8039,7 @@ elif page == "📊 Dashboard":
 
         if st.button(
 
-            "📄  View Reports",
+            "View Reports",
 
             use_container_width=True,
 
@@ -8121,7 +8049,7 @@ elif page == "📊 Dashboard":
 
 
 
-            st.session_state.page = "📄 Reports"
+            st.session_state.page = "Reports"
 
             st.rerun()
 
@@ -8133,7 +8061,7 @@ elif page == "📊 Dashboard":
 
 
 
-elif page == "🔍 Detection":
+elif page == "Detection":
 
 
 
@@ -8287,11 +8215,7 @@ elif page == "🔍 Detection":
 
 
 
-            <div class="detection-config-icon">
-
-                🎯
-
-            </div>
+            <div class="detection-config-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg></div>
 
 
 
@@ -8361,20 +8285,20 @@ elif page == "🔍 Detection":
 
             f"Current threshold: **{confidence_percent}%** · "
 
-            "💡 *Tip: Set to 12%–20% for mixed waste scenes to catch faint/occluded objects.*"
+            "*Tip: Set to 12%–20% for mixed waste scenes to catch faint/occluded objects.*"
 
         )
 
         mode_c1, mode_c2 = st.columns(2)
         with mode_c1:
             high_res_mode = st.checkbox(
-                "🔬 High-Res (1024px)",
+                "High-Res (1024px)",
                 value=True,
                 help="Preserves fine visual details on small or distant items in mixed scenes."
             )
         with mode_c2:
             tta_mode = st.checkbox(
-                "🔄 Multi-Scale TTA",
+                "Multi-Scale TTA",
                 value=False,
                 help="Test-Time Augmentation: boosts recall on occluded, crushed, or angled items."
             )
@@ -8395,7 +8319,7 @@ elif page == "🔍 Detection":
 
         st.html("""
         <div class="detection-config-card">
-            <div class="detection-config-icon">🧠</div>
+            <div class="detection-config-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div>
             <div class="detection-config-content">
                 <div class="detection-config-title">Active AI Model</div>
                 <div class="detection-config-description">Select model checkpoint for detection</div>
@@ -8418,7 +8342,7 @@ elif page == "🔍 Detection":
 
         model_fname = selected_info.get("filename", model_path.name)
         model_desc = selected_info.get("description", "")
-        st.caption(f"🧠 Active: **{model_fname}** · {model_desc}")
+        st.caption(f"Active Model: **{model_fname}** · {model_desc}")
 
 
 
@@ -8454,7 +8378,7 @@ elif page == "🔍 Detection":
 
                 <div class="detection-workspace-title">
 
-                    📷 Image Detection
+                    Image Detection
 
                 </div>
 
@@ -8522,11 +8446,7 @@ elif page == "🔍 Detection":
 
 
 
-                <div class="detection-upload-icon">
-
-                    📤
-
-                </div>
+                <div class="detection-upload-icon"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="17 8 12 3 7 8"/><line x1="12" y1="3" x2="12" y2="15"/></svg></div>
 
 
 
@@ -8674,11 +8594,7 @@ elif page == "🔍 Detection":
 
 
 
-                    <div class="detection-analysis-icon">
-
-                        🤖
-
-                    </div>
+                    <div class="detection-analysis-icon"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><rect x="3" y="11" width="18" height="10" rx="2"/><circle cx="12" cy="5" r="2"/><path d="M12 7v4"/><line x1="8" y1="16" x2="8" y2="16"/><line x1="16" y1="16" x2="16" y2="16"/></svg></div>
 
 
 
@@ -8736,7 +8652,7 @@ elif page == "🔍 Detection":
 
                 detect_button = st.button(
 
-                    "🔍  Detect Waste",
+                    "Detect Waste",
 
                     type="primary",
 
@@ -8780,7 +8696,7 @@ elif page == "🔍 Detection":
 
                     with st.spinner(
 
-                        "🤖 AI is analyzing the image..."
+                        "Analyzing image with WasteAI model..."
 
                     ):
 
@@ -9029,7 +8945,7 @@ elif page == "🔍 Detection":
 
                                 summary_col1,
 
-                                "♻️",
+                                '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/><path d="M11 19h8.2a1.8 1.8 0 0 0 1.57-.88 1.8 1.8 0 0 0 0-1.78L17 10"/><path d="m14 14 3-3 3 3"/><path d="m11 5 3-3 3 3"/><path d="M14 2v6"/><path d="m6 16-3 3 3 3"/></svg>',
 
                                 total_items,
 
@@ -9043,7 +8959,7 @@ elif page == "🔍 Detection":
 
                                 summary_col2,
 
-                                "🗂️",
+                                '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg>',
 
                                 unique_categories,
 
@@ -9057,7 +8973,7 @@ elif page == "🔍 Detection":
 
                                 summary_col3,
 
-                                "🏆",
+                                '<svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg>',
 
                                 dominant_category,
 
@@ -9291,7 +9207,7 @@ elif page == "🔍 Detection":
 
             if st.button(
 
-                "📊  View Detailed Analytics",
+                "View Detailed Analytics",
 
                 type="primary",
 
@@ -9301,7 +9217,7 @@ elif page == "🔍 Detection":
 
             ):
 
-                st.session_state.page = "📈 Analytics"
+                st.session_state.page = "Analytics"
 
                 st.rerun()
 
@@ -9329,7 +9245,7 @@ elif page == "🔍 Detection":
 
                 <div class="detection-workspace-title">
 
-                    🎥 Video Detection
+                    Video Detection
 
                 </div>
 
@@ -9397,7 +9313,7 @@ elif page == "🔍 Detection":
 
                 <div class="detection-workspace-title">
 
-                    📹 Live Webcam Detection
+                    Live Webcam Detection
 
                 </div>
 
@@ -9465,7 +9381,7 @@ elif page == "🔍 Detection":
 
                 <div class="detection-workspace-title">
 
-                    ▶️ YouTube Detection
+                    YouTube Detection
 
                 </div>
 
@@ -9533,7 +9449,7 @@ elif page == "🔍 Detection":
 
                 <div class="detection-workspace-title">
 
-                    🌐 RTSP Stream Detection
+                    RTSP Stream Detection
 
                 </div>
 
@@ -9583,7 +9499,7 @@ elif page == "🔍 Detection":
 
 
 
-elif page == "📈 Analytics":
+elif page == "Analytics":
 
 
 
@@ -9671,11 +9587,7 @@ elif page == "📈 Analytics":
 
 
 
-            <div class="analytics-empty-icon">
-
-                📊
-
-            </div>
+            <div class="analytics-empty-icon"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></div>
 
 
 
@@ -9725,7 +9637,7 @@ elif page == "📈 Analytics":
 
             if st.button(
 
-                "🔍  Go to Detection",
+                "Go to Detection",
 
                 type="primary",
 
@@ -9737,7 +9649,7 @@ elif page == "📈 Analytics":
 
 
 
-                st.session_state.page = "🔍 Detection"
+                st.session_state.page = "Detection"
 
                 st.rerun()
 
@@ -9903,11 +9815,7 @@ elif page == "📈 Analytics":
 
 
 
-                <div class="analytics-kpi-icon">
-
-                    ♻️
-
-                </div>
+                <div class="analytics-kpi-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/><path d="M11 19h8.2a1.8 1.8 0 0 0 1.57-.88 1.8 1.8 0 0 0 0-1.78L17 10"/><path d="m14 14 3-3 3 3"/><path d="m11 5 3-3 3 3"/><path d="M14 2v6"/><path d="m6 16-3 3 3 3"/></svg></div>
 
 
 
@@ -9961,11 +9869,7 @@ elif page == "📈 Analytics":
 
 
 
-                <div class="analytics-kpi-icon">
-
-                    🗂️
-
-                </div>
+                <div class="analytics-kpi-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
 
 
 
@@ -10019,11 +9923,7 @@ elif page == "📈 Analytics":
 
 
 
-                <div class="analytics-kpi-icon">
-
-                    🎯
-
-                </div>
+                <div class="analytics-kpi-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/></svg></div>
 
 
 
@@ -10077,11 +9977,7 @@ elif page == "📈 Analytics":
 
 
 
-                <div class="analytics-kpi-icon">
-
-                    🏆
-
-                </div>
+                <div class="analytics-kpi-icon"><svg width="20" height="20" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 15.09 8.26 22 9.27 17 14.14 18.18 21.02 12 17.77 5.82 21.02 7 14.14 2 9.27 8.91 8.26 12 2"/></svg></div>
 
 
 
@@ -10481,11 +10377,7 @@ elif page == "📈 Analytics":
 
 
 
-            <div class="analytics-confidence-icon">
-
-                🎯
-
-            </div>
+            <div class="analytics-confidence-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="12" r="10"/><circle cx="12" cy="12" r="6"/><circle cx="12" cy="12" r="2"/></svg></div>
 
 
 
@@ -10561,7 +10453,7 @@ elif page == "📈 Analytics":
 
 
 
-elif page == "📄 Reports":
+elif page == "Reports":
 
 
 
@@ -10649,11 +10541,7 @@ elif page == "📄 Reports":
 
 
 
-            <div class="reports-empty-icon">
-
-                📄
-
-            </div>
+            <div class="reports-empty-icon"><svg width="38" height="38" viewBox="0 0 24 24" fill="none" stroke="#94a3b8" stroke-width="1.8" stroke-linecap="round" stroke-linejoin="round"><path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/></svg></div>
 
 
 
@@ -10699,7 +10587,7 @@ elif page == "📄 Reports":
 
             if st.button(
 
-                "🔍  Go to Detection",
+                "Go to Detection",
 
                 type="primary",
 
@@ -10711,13 +10599,13 @@ elif page == "📄 Reports":
 
 
 
-                st.session_state.page = "🔍 Detection"
+                st.session_state.page = "Detection"
 
 
 
                 if "top_navigation" in st.session_state:
 
-                    st.session_state.top_navigation = "🔍 Detection"
+                    st.session_state.top_navigation = "Detection"
 
 
 
@@ -10819,13 +10707,7 @@ elif page == "📄 Reports":
 
 
 
-                <div class="reports-summary-icon">
-
-                    ♻️
-
-                </div>
-
-
+                <div class="reports-summary-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polyline points="7 23 3 19 7 15"></polyline><path d="M21 13v2a4 4 0 0 1-4 4H3"></path><polyline points="17 1 21 5 17 9"></polyline><path d="M3 11V9a4 4 0 0 1 4-4h14"></path></svg></div>
 
                 <div class="reports-summary-label">
 
@@ -10869,13 +10751,7 @@ elif page == "📄 Reports":
 
 
 
-                <div class="reports-summary-icon">
-
-                    🗂️
-
-                </div>
-
-
+                <div class="reports-summary-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/></svg></div>
 
                 <div class="reports-summary-label">
 
@@ -10919,13 +10795,7 @@ elif page == "📄 Reports":
 
 
 
-                <div class="reports-summary-icon">
-
-                    🏆
-
-                </div>
-
-
+                <div class="reports-summary-icon"><svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#ca8a04" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><circle cx="12" cy="8" r="7"/><polyline points="8.21 13.89 7 23 12 20 17 23 15.79 13.88"/></svg></div>
 
                 <div class="reports-summary-label">
 
@@ -11149,11 +11019,7 @@ elif page == "📄 Reports":
 
 
 
-            <div class="reports-export-icon">
-
-                📥
-
-            </div>
+            <div class="reports-export-icon"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/><polyline points="7 10 12 15 17 10"/><line x1="12" y1="15" x2="12" y2="3"/></svg></div>
 
 
 
@@ -11219,7 +11085,7 @@ elif page == "📄 Reports":
 
             st.download_button(
 
-                "📥  Download Waste Detection Report",
+                "Download Waste Detection Report (CSV)",
 
                 data=report_csv,
 
@@ -11289,7 +11155,7 @@ elif page == "📄 Reports":
                 key="reports_page_email"
             ):
                 if is_dummy_or_empty:
-                    st.warning("⚠️ Email credentials are not configured yet! Please enter your Gmail address, 16-character App Password, and Admin email in the settings below.")
+                    st.warning("Email credentials are not configured yet! Please enter your Gmail address, 16-character App Password, and Admin email in the settings below.")
                 else:
                     try:
                         with st.spinner("Connecting to Gmail SMTP and sending report..."):
@@ -11324,11 +11190,11 @@ elif page == "📄 Reports":
                         st.error(f"Failed to send email: {e}")
 
             # Expandable configuration section for user convenience
-            with st.expander("⚙️ Email / SMTP Configuration", expanded=is_dummy_or_empty):
+            with st.expander("Email and SMTP Configuration", expanded=is_dummy_or_empty):
                 st.markdown(
                     "<div style='font-size: 0.85rem; color: #555; margin-bottom: 8px;'>"
                     "Configure your Gmail SMTP settings to enable emailing reports to admins.<br>"
-                    "💡 <b>Gmail requires a 16-character App Password:</b> "
+                    "<b>Note:</b> Gmail requires a 16-character App Password: "
                     "Go to <a href='https://myaccount.google.com/apppasswords' target='_blank'>myaccount.google.com/apppasswords</a> to generate one."
                     "</div>",
                     unsafe_allow_html=True
@@ -11337,7 +11203,7 @@ elif page == "📄 Reports":
                 input_pass = st.text_input("16-character App Password", value=cur_pass if not ("your_16_character" in cur_pass) else "", type="password", placeholder="xxxx xxxx xxxx xxxx", key="smtp_cfg_pass")
                 input_admin = st.text_input("Admin / Recipient Email", value=cur_admin if not ("example.com" in cur_admin) else "", placeholder="admin@example.com", key="smtp_cfg_admin")
 
-                if st.button("💾 Save Email Configuration", width="stretch", key="save_smtp_cfg_btn"):
+                if st.button("Save Email Configuration", width="stretch", key="save_smtp_cfg_btn"):
                     if not input_sender or not input_pass or not input_admin:
                         st.error("Please fill out all three fields (Sender, App Password, and Admin email).")
                     else:
@@ -11442,7 +11308,7 @@ elif page == "📄 Reports":
 
 
 
-elif page == "⚙️ Settings":
+elif page == "Settings":
 
 
 
@@ -11504,7 +11370,7 @@ elif page == "⚙️ Settings":
 
                 ">
 
-                    ⚙️ Configuration Center
+                    Configuration Center
 
                 </div>
 
@@ -11580,7 +11446,7 @@ elif page == "⚙️ Settings":
 
 
 
-    st.markdown("### 🤖 AI Model Configuration")
+    st.markdown("### AI Model Configuration")
 
 
 
@@ -11614,15 +11480,7 @@ elif page == "⚙️ Settings":
 
 
 
-            <div style="
-
-                font-size:26px;
-
-            ">
-
-                🧠
-
-            </div>
+            <div style="font-size:26px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#16a34a" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><rect x="4" y="4" width="16" height="16" rx="2"/><rect x="9" y="9" width="6" height="6"/><line x1="9" y1="1" x2="9" y2="4"/><line x1="15" y1="1" x2="15" y2="4"/><line x1="9" y1="20" x2="9" y2="23"/><line x1="15" y1="20" x2="15" y2="23"/><line x1="20" y1="9" x2="23" y2="9"/><line x1="20" y1="14" x2="23" y2="14"/><line x1="1" y1="9" x2="4" y2="9"/><line x1="1" y1="14" x2="4" y2="14"/></svg></div>
 
 
 
@@ -11696,15 +11554,7 @@ elif page == "⚙️ Settings":
 
 
 
-            <div style="
-
-                font-size:26px;
-
-            ">
-
-                ⚡
-
-            </div>
+            <div style="font-size:26px;"><svg width="28" height="28" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"><polygon points="13 2 3 14 12 14 11 22 21 10 12 10 13 2"/></svg></div>
 
 
 
@@ -11800,7 +11650,7 @@ elif page == "⚙️ Settings":
 
 
 
-    st.markdown("### 🎯 Detection Configuration")
+    st.markdown("### Detection Configuration")
 
 
 
@@ -11842,7 +11692,7 @@ elif page == "⚙️ Settings":
 
             ">
 
-                🎯 Confidence Threshold
+                Confidence Threshold
 
             </div>
 
@@ -11938,7 +11788,7 @@ elif page == "⚙️ Settings":
 
             ">
 
-                🛰️ Object Tracking
+                Object Tracking
 
             </div>
 
@@ -12040,7 +11890,7 @@ elif page == "⚙️ Settings":
 
 
 
-    st.markdown("### ♻️ Supported Waste Categories")
+    st.markdown("### Supported Waste Categories")
 
 
 
@@ -12056,17 +11906,17 @@ elif page == "⚙️ Settings":
 
     categories = [
 
-        ("📦", "CARDBOARD"),
+        ("Cardboard", "CARDBOARD"),
 
-        ("🍾", "GLASS"),
+        ("Glass", "GLASS"),
 
-        ("🥫", "METAL"),
+        ("Metal", "METAL"),
 
-        ("📄", "PAPER"),
+        ("Paper", "PAPER"),
 
-        ("🥤", "PLASTIC"),
+        ("Plastic", "PLASTIC"),
 
-        ("🌱", "BIODEGRADABLE")
+        ("Organic", "BIODEGRADABLE")
 
     ]
 
@@ -12172,7 +12022,7 @@ elif page == "⚙️ Settings":
 
 
 
-    st.markdown("### 📡 Detection Input Sources")
+    st.markdown("### Detection Input Sources")
 
 
 
@@ -12188,15 +12038,15 @@ elif page == "⚙️ Settings":
 
     source_icons = {
 
-        settings.IMAGE: "📷",
+        settings.IMAGE: "Image",
 
-        settings.VIDEO: "🎥",
+        settings.VIDEO: "Video",
 
-        settings.WEBCAM: "📹",
+        settings.WEBCAM: "Webcam",
 
-        settings.YOUTUBE: "▶️",
+        settings.YOUTUBE: "YouTube",
 
-        settings.RTSP: "🌐"
+        settings.RTSP: "RTSP Stream"
 
     }
 
@@ -12258,7 +12108,7 @@ elif page == "⚙️ Settings":
 
                 source,
 
-                "📡"
+                "Sensors"
 
             ) + """
 
@@ -12326,7 +12176,7 @@ elif page == "⚙️ Settings":
 
 
 
-    st.markdown("### ℹ️ System Information")
+    st.markdown("### System Information")
 
 
 
