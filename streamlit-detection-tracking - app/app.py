@@ -6294,6 +6294,373 @@ section[data-testid="stSidebar"] {
 
 }
 
+
+/* ============================================================
+   ULTRA-RESPONSIVE MOBILE & TABLET ADAPTATION
+   Fixes mobile layout, horizontal overflow, column squishing,
+   touch targets, and navigation bar.
+   ============================================================ */
+
+/* Mobile & Small Tablets (screen width <= 768px) */
+@media screen and (max-width: 768px) {
+    /* 1. Global Viewport & Container Reset */
+    html, body, .stApp {
+        overflow-x: hidden !important;
+        max-width: 100vw !important;
+    }
+
+    .main .block-container,
+    body:has(.home-hero) .main .block-container,
+    div[data-testid="stAppViewBlockContainer"] {
+        padding-left: 12px !important;
+        padding-right: 12px !important;
+        padding-top: 8px !important;
+        padding-bottom: 28px !important;
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    /* 2. Top Navigation Bar: Swipeable Horizontal Pill Bar */
+    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) {
+        display: flex !important;
+        flex-direction: row !important;
+        flex-wrap: nowrap !important;
+        overflow-x: auto !important;
+        overflow-y: hidden !important;
+        -webkit-overflow-scrolling: touch !important;
+        scrollbar-width: none !important;
+        gap: 8px !important;
+        padding: 4px 2px 10px 2px !important;
+        align-items: center !important;
+        margin-bottom: 12px !important;
+        width: 100% !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"])::-webkit-scrollbar {
+        display: none !important;
+    }
+
+    /* Brand Logo / Title in Top Bar */
+    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) > div[data-testid="column"]:first-child {
+        flex: 0 0 auto !important;
+        min-width: 120px !important;
+        width: auto !important;
+        margin-right: 4px !important;
+    }
+
+    .wa-top-brand {
+        height: 44px !important;
+        gap: 8px !important;
+        padding-left: 0px !important;
+    }
+
+    .wa-top-logo {
+        width: 34px !important;
+        height: 34px !important;
+        font-size: 18px !important;
+        border-radius: 9px !important;
+    }
+
+    .wa-top-brand-name {
+        font-size: 17px !important;
+        letter-spacing: -0.3px !important;
+    }
+
+    .wa-top-brand-subtitle {
+        display: none !important;
+    }
+
+    /* Navigation Buttons: Comfortable Rounded Chips */
+    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) > div[data-testid="column"]:not(:first-child) {
+        flex: 0 0 auto !important;
+        min-width: max-content !important;
+        width: auto !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) button {
+        white-space: nowrap !important;
+        border-radius: 999px !important;
+        padding: 8px 16px !important;
+        font-size: 13px !important;
+        font-weight: 600 !important;
+        min-height: 40px !important;
+        height: 40px !important;
+        box-shadow: 0 2px 6px rgba(0, 0, 0, 0.05) !important;
+        border: 1px solid #d8e5de !important;
+        background: #ffffff !important;
+        color: #17352b !important;
+        display: inline-flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+    }
+
+    .wa-top-divider {
+        margin-top: 4px !important;
+        margin-bottom: 16px !important;
+    }
+
+    /* 3. Universal Column Stacking for all multi-column layouts */
+    div[data-testid="stHorizontalBlock"]:not(:has(button[key^="top_nav_"])) {
+        display: flex !important;
+        flex-direction: column !important;
+        flex-wrap: wrap !important;
+        gap: 14px !important;
+        width: 100% !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:not(:has(button[key^="top_nav_"])) > div[data-testid="column"] {
+        width: 100% !important;
+        min-width: 100% !important;
+        max-width: 100% !important;
+        flex: 1 1 100% !important;
+        margin-bottom: 0px !important;
+    }
+
+    /* 4. Hero Section Mobile Optimization */
+    .home-hero {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 24px 18px !important;
+        min-height: auto !important;
+        margin-bottom: 20px !important;
+        border-radius: 20px !important;
+    }
+
+    .home-hero-content {
+        max-width: 100% !important;
+        width: 100% !important;
+    }
+
+    .home-hero h1,
+    .hero-title,
+    .main-title {
+        font-size: 25px !important;
+        line-height: 1.22 !important;
+        letter-spacing: -0.4px !important;
+    }
+
+    .home-hero p,
+    .hero-description,
+    .dashboard-hero p {
+        font-size: 14px !important;
+        line-height: 1.45 !important;
+        margin-top: 12px !important;
+        max-width: 100% !important;
+    }
+
+    .home-visual {
+        width: 100% !important;
+        max-width: 100% !important;
+        margin-top: 22px !important;
+        justify-content: center !important;
+    }
+
+    .home-visual-card {
+        width: 100% !important;
+        max-width: 320px !important;
+        padding: 20px 18px !important;
+        border-radius: 18px !important;
+    }
+
+    .dashboard-hero {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        padding: 20px 18px !important;
+        min-height: auto !important;
+        border-radius: 16px !important;
+        margin-bottom: 16px !important;
+    }
+
+    /* 5. Mobile Cards, Metrics & Padding */
+    .dashboard-card,
+    .detection-summary-card,
+    .analytics-chart-card,
+    .reports-info-card,
+    .analytics-confidence-card,
+    .detection-analysis-card,
+    .detection-model-card,
+    .home-tech-badge {
+        padding: 16px 16px !important;
+        border-radius: 14px !important;
+        min-height: auto !important;
+        width: 100% !important;
+        max-width: 100% !important;
+    }
+
+    .card-value,
+    .dashboard-card-value {
+        font-size: 24px !important;
+        line-height: 1.2 !important;
+    }
+
+    .card-title,
+    .dashboard-card-title {
+        font-size: 13px !important;
+    }
+
+    /* 6. Detection Page Mobile Tuning */
+    .detection-header,
+    .analytics-header,
+    .reports-header {
+        padding: 18px 16px !important;
+        border-radius: 16px !important;
+        margin-bottom: 14px !important;
+    }
+
+    .detection-upload-card {
+        padding: 28px 16px !important;
+        border-radius: 16px !important;
+        margin-top: 6px !important;
+    }
+
+    .detection-upload-icon {
+        width: 50px !important;
+        height: 50px !important;
+        font-size: 24px !important;
+        margin-bottom: 12px !important;
+    }
+
+    .detection-upload-card h3 {
+        font-size: 16px !important;
+    }
+
+    .detection-upload-card p {
+        font-size: 13px !important;
+    }
+
+    /* Images and Panels */
+    div[data-testid="stImage"] {
+        width: 100% !important;
+    }
+
+    div[data-testid="stImage"] img {
+        width: 100% !important;
+        height: auto !important;
+        max-height: 420px !important;
+        object-fit: contain !important;
+        border-radius: 12px !important;
+    }
+
+    .detection-result-header {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 14px 16px !important;
+    }
+
+    .detection-result-badge {
+        align-self: flex-start !important;
+    }
+
+    /* 7. Tables, DataFrames & Charts Horizontal Scroll Container */
+    div[data-testid="stDataFrame"],
+    div[data-testid="stTable"],
+    div[data-testid="stVegaLiteChart"],
+    div[data-testid="stArrowVegaLiteChart"] {
+        width: 100% !important;
+        max-width: 100% !important;
+        overflow-x: auto !important;
+        -webkit-overflow-scrolling: touch !important;
+        border-radius: 12px !important;
+    }
+
+    /* 8. Touch-First Buttons & Form Controls */
+    .stButton > button {
+        min-height: 44px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        border-radius: 10px !important;
+        padding: 8px 14px !important;
+        width: 100% !important;
+    }
+
+    div[data-testid="stDownloadButton"] > button {
+        min-height: 46px !important;
+        font-size: 14px !important;
+        font-weight: 600 !important;
+        width: 100% !important;
+    }
+
+    div[data-testid="stFileUploader"] {
+        width: 100% !important;
+    }
+
+    div[data-testid="stFileUploaderDropzone"] {
+        padding: 20px 14px !important;
+        border-radius: 14px !important;
+    }
+
+    /* Activity Rows & Badges on Mobile */
+    .dashboard-activity-row {
+        flex-direction: column !important;
+        align-items: flex-start !important;
+        gap: 8px !important;
+        padding: 12px 14px !important;
+    }
+
+    .dashboard-activity-confidence {
+        align-self: flex-start !important;
+    }
+
+    /* Empty States on Mobile */
+    .dashboard-empty,
+    .analytics-empty,
+    .reports-empty {
+        padding: 30px 16px !important;
+    }
+
+    .dashboard-empty-icon,
+    .analytics-empty-icon,
+    .reports-empty-icon {
+        width: 52px !important;
+        height: 52px !important;
+        font-size: 26px !important;
+    }
+
+    .dashboard-empty-title,
+    .analytics-empty-title,
+    .reports-empty-title {
+        font-size: 16px !important;
+    }
+
+    .dashboard-empty-text,
+    .analytics-empty-text,
+    .reports-empty-text {
+        font-size: 13px !important;
+        max-width: 100% !important;
+    }
+}
+
+/* Extra Small Phones (screen width <= 420px) */
+@media screen and (max-width: 420px) {
+    .main .block-container,
+    body:has(.home-hero) .main .block-container {
+        padding-left: 8px !important;
+        padding-right: 8px !important;
+    }
+
+    .home-hero h1,
+    .hero-title,
+    .main-title {
+        font-size: 22px !important;
+    }
+
+    .home-hero,
+    .dashboard-hero,
+    .detection-header,
+    .analytics-header,
+    .reports-header {
+        padding: 18px 14px !important;
+        border-radius: 14px !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) button {
+        font-size: 12px !important;
+        padding: 6px 12px !important;
+        min-height: 38px !important;
+    }
+}
+
 </style>
 
 """, unsafe_allow_html=True)
