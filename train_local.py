@@ -43,11 +43,13 @@ def main():
         
     print(f"[OK] Dataset found: {data_yaml}")
 
-    # Load Model (Resume from latest checkpoint if available)
-    last_ckpt_candidates = [p for p in Path("runs").rglob("last.pt") if p.is_file()]
+    # Load Model (Resume from latest local_waste_train checkpoint if available)
+    last_ckpt_candidates = [p for p in Path("runs").rglob("last.pt") if p.is_file() and "local_waste_train" in str(p)]
+    if not last_ckpt_candidates:
+        last_ckpt_candidates = [p for p in Path("runs").rglob("last.pt") if p.is_file()]
     if last_ckpt_candidates:
         last_ckpt = max(last_ckpt_candidates, key=lambda p: p.stat().st_mtime)
-        print(f"[INFO] Resuming training from latest checkpoint: {last_ckpt}")
+        print(f"[INFO] Resuming training from checkpoint: {last_ckpt}")
         model = YOLO(str(last_ckpt))
         is_resume = True
     else:
@@ -55,7 +57,7 @@ def main():
         model = YOLO("yolov8s.pt")
         is_resume = False
 
-    TARGET_EPOCH = 80
+    TARGET_EPOCH = 40
 
     def check_epoch_stop(trainer):
         current_global_epoch = trainer.start_epoch + trainer.epoch + 1
@@ -94,7 +96,9 @@ def main():
         )
 
     print("\n[SUCCESS] Training completed successfully!")
-    best_weights_candidates = [p for p in Path("runs").rglob("best.pt") if p.is_file()]
+    best_weights_candidates = [p for p in Path("runs").rglob("best.pt") if p.is_file() and "local_waste_train" in str(p)]
+    if not best_weights_candidates:
+        best_weights_candidates = [p for p in Path("runs").rglob("best.pt") if p.is_file()]
     target_weights = Path("streamlit-detection-tracking - app/weights/yoloooo.pt")
     
     if best_weights_candidates:

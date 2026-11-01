@@ -28,14 +28,25 @@ ENV/
 
 # Datasets and Large Runs / Models
 dataset/
+dataset_balanced/
+dataset_v2/
+dataset_v3/
+waste-classification-new-1/
+datasets/
+**/datasets/
 runs/
 *.zip
 *.tar.gz
-waste-classification-new-1/
+*.cache
 
-# Base pretrained weights (keep app weights if needed)
-yolov8s.pt
-yolo26n.pt
+# Logs
+*.log
+
+# Base pretrained weights (keep app weights in streamlit-detection-tracking - app/weights/)
+/yolov8s.pt
+/yolo26n.pt
+/yolo11m.pt
+/yolo11s.pt
 
 # Streamlit & IDE
 .streamlit/secrets.toml

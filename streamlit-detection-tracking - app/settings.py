@@ -50,7 +50,12 @@ VIDEOS_DICT = {
 
 # ML Model config
 MODEL_DIR = root_path / 'weights'
-DETECTION_MODEL = MODEL_DIR / 'yoloooo.pt'
+# YOLO11s (train_v2.py) matches YOLO11m (train_v3.py) on held-out test mAP50 (0.765 vs 0.762)
+# while running ~2x faster, so it is preferred; the original model is the last fallback
+for _name in ('waste_yolo11s.pt', 'waste_yolo11m.pt', 'yoloooo.pt'):
+    DETECTION_MODEL = MODEL_DIR / _name
+    if DETECTION_MODEL.exists():
+        break
 #SEGMENTATION_MODEL = MODEL_DIR+'yolov8n-seg.pt'
 
 # Webcam

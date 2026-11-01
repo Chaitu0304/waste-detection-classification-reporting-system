@@ -5,6 +5,7 @@ import settings
 from pathlib import Path
 
 
+@st.cache_resource
 def load_model(model_path):
     """
     Loads a YOLO object detection model from the specified model_path.
@@ -60,22 +61,23 @@ def _display_detected_frames(conf, model, st_frame, image, is_display_tracking=N
     None
     """
 
-    # Resize the image to a standard size
-    image = cv2.resize(image, (720, int(720*(9/16))))
+    # Resize the image to a standard width, keeping its aspect ratio
+    h, w = image.shape[:2]
+    image = cv2.resize(image, (720, int(720 * h / w)))
 
     # Display object tracking, if specified
     if is_display_tracking:
-        res = model.track(image, conf=conf, persist=True, tracker=tracker)
+        res = model.track(image, conf=conf, iou=0.45, agnostic_nms=True, persist=True, tracker=tracker)
     else:
         # Predict the objects in the image using the YOLOv8 model
-        res = model.predict(image, conf=conf)
+        res = model.predict(image, conf=conf, iou=0.45, agnostic_nms=True)
 
     # # Plot the detected objects on the video frame
     res_plotted = res[0].plot()
     st_frame.image(res_plotted,
                    caption='Detected Video',
                    channels="BGR",
-                   use_container_width=True
+                   width='stretch'
                    )
 
 

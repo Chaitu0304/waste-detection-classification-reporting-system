@@ -3252,6 +3252,7 @@ model_path = Path(settings.DETECTION_MODEL)
 
 try:
     model = helper.load_model(model_path)
+    st.sidebar.caption(f"🧠 Model: `{model_path.name}`")
 except Exception as ex:
     model = None
     st.error(f"Unable to load model: {model_path}")
