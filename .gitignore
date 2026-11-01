@@ -31,6 +31,7 @@ dataset/
 dataset_balanced/
 dataset_v2/
 dataset_v3/
+dataset_mixed/
 waste-classification-new-1/
 datasets/
 **/datasets/
@@ -49,7 +50,10 @@ runs/
 /yolo11s.pt
 
 # Streamlit & IDE
-.streamlit/secrets.toml
+.streamlit/
+**/.streamlit/
 .vscode/
 .idea/
 .DS_Store
+
+scratch/

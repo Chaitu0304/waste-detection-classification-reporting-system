@@ -50,13 +50,33 @@ VIDEOS_DICT = {
 
 # ML Model config
 MODEL_DIR = root_path / 'weights'
-# YOLO11s (train_v2.py) matches YOLO11m (train_v3.py) on held-out test mAP50 (0.765 vs 0.762)
-# while running ~2x faster, so it is preferred; the original model is the last fallback
-for _name in ('waste_yolo11s.pt', 'waste_yolo11m.pt', 'yoloooo.pt'):
-    DETECTION_MODEL = MODEL_DIR / _name
-    if DETECTION_MODEL.exists():
-        break
-#SEGMENTATION_MODEL = MODEL_DIR+'yolov8n-seg.pt'
+
+AVAILABLE_MODELS = {
+    "🌟 Smart Hybrid AI (Best Accuracy - Two-Stage)": {
+        "path": Path("hybrid"),
+        "filename": "Smart Hybrid AI (Two-Stage)",
+        "description": "Two-stage precision detector: COCO object localization + focused waste material classification. Eliminates dirt hallucinations and resolves Glass/Metal/Plastic."
+    }
+}
+_model_specs = [
+    ("waste_yolo_mixed.pt", "YOLO11m Mixed (Multi-Category Fine-Tuned)", "Trained on multi-category scenes with touching/mixed waste items"),
+    ("waste_yolo11m.pt", "YOLO11m (High Precision - Cleaned v3)", "Best accuracy, trained on cleaned dataset with part-boxes removed"),
+    ("waste_yolo11s.pt", "YOLO11s (Fast - v2)", "Fast inference, balanced dataset"),
+    ("yoloooo.pt", "YOLOv8 Tuned (Original)", "Original fine-tuned YOLOv8 weights"),
+    ("best.pt", "YOLOv8 Best Checkpoint", "Original best training checkpoint"),
+]
+
+for _filename, _name, _desc in _model_specs:
+    _p = MODEL_DIR / _filename
+    if _p.exists():
+        AVAILABLE_MODELS[_name] = {
+            "path": _p,
+            "filename": _filename,
+            "description": _desc
+        }
+
+# Default detection model: Smart Hybrid AI preferred for best accuracy
+DETECTION_MODEL = Path("hybrid")
 
 # Webcam
 WEBCAM_PATH = 0

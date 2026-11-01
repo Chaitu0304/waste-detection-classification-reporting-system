@@ -6500,15 +6500,14 @@ page = st.session_state.page
 
 
 
-model_path = Path(settings.DETECTION_MODEL)
+if "selected_model_name" not in st.session_state:
+    st.session_state.selected_model_name = list(settings.AVAILABLE_MODELS.keys())[0] if settings.AVAILABLE_MODELS else "Default"
 
-
+selected_info = settings.AVAILABLE_MODELS.get(st.session_state.selected_model_name, {})
+model_path = selected_info.get("path", Path(settings.DETECTION_MODEL))
 
 try:
-
     model = helper.load_model(model_path)
-    st.sidebar.caption(f"🧠 Model: `{model_path.name}`")
-
 except Exception as ex:
 
     model = None
@@ -7971,17 +7970,15 @@ elif page == "🔍 Detection":
 
             max_value=100,
 
-            value=10,
+            value=18,
 
-            step=5,
+            step=1,
 
             label_visibility="collapsed",
 
             help=(
 
-                "Higher values show only detections where "
-
-                "the model is more confident."
+                "Control model sensitivity. 12%–20% is recommended for mixed waste piles to catch occluded items."
 
             )
 
@@ -7997,11 +7994,23 @@ elif page == "🔍 Detection":
 
             f"Current threshold: **{confidence_percent}%** · "
 
-            "Lower values detect more objects but may increase "
-
-            "false detections."
+            "💡 *Tip: Set to 12%–20% for mixed waste scenes to catch faint/occluded objects.*"
 
         )
+
+        mode_c1, mode_c2 = st.columns(2)
+        with mode_c1:
+            high_res_mode = st.checkbox(
+                "🔬 High-Res (1024px)",
+                value=True,
+                help="Preserves fine visual details on small or distant items in mixed scenes."
+            )
+        with mode_c2:
+            tta_mode = st.checkbox(
+                "🔄 Multi-Scale TTA",
+                value=False,
+                help="Test-Time Augmentation: boosts recall on occluded, crushed, or angled items."
+            )
 
 
 
@@ -8017,43 +8026,32 @@ elif page == "🔍 Detection":
 
     with config_col2:
 
-
-
         st.html("""
-
-        <div class="detection-model-card">
-
-
-
-            <div class="detection-model-icon">
-
-                🤖
-
+        <div class="detection-config-card">
+            <div class="detection-config-icon">🧠</div>
+            <div class="detection-config-content">
+                <div class="detection-config-title">Active AI Model</div>
+                <div class="detection-config-description">Select model checkpoint for detection</div>
             </div>
-
-
-
-            <div class="detection-model-name">
-
-                YOLOv8
-
-            </div>
-
-
-
-            <div class="detection-model-status">
-
-                <span></span>
-
-                Model Ready
-
-            </div>
-
-
-
         </div>
-
         """)
+
+        model_options = list(settings.AVAILABLE_MODELS.keys())
+        current_idx = model_options.index(st.session_state.selected_model_name) if st.session_state.selected_model_name in model_options else 0
+        new_selected = st.selectbox(
+            "Active AI Model",
+            options=model_options,
+            index=current_idx,
+            label_visibility="collapsed",
+            key="model_select_dropdown"
+        )
+        if new_selected != st.session_state.selected_model_name:
+            st.session_state.selected_model_name = new_selected
+            st.rerun()
+
+        model_fname = selected_info.get("filename", model_path.name)
+        model_desc = selected_info.get("description", "")
+        st.caption(f"🧠 Active: **{model_fname}** · {model_desc}")
 
 
 
@@ -8421,12 +8419,19 @@ elif page == "🔍 Detection":
 
 
 
+                        pred_kwargs = {
+                            "conf": confidence,
+                            "iou": 0.45,
+                            "agnostic_nms": False,
+                        }
+                        if high_res_mode:
+                            pred_kwargs["imgsz"] = 1024
+                        if tta_mode:
+                            pred_kwargs["augment"] = True
+
                         res = model.predict(
-
                             uploaded_image,
-
-                            conf=confidence
-
+                            **pred_kwargs
                         )
 
 
@@ -10861,91 +10866,128 @@ elif page == "📄 Reports":
 
             )
 
-            if st.button(
-
-                "Send Report to Admin",
-
-                use_container_width=True,
-
-                key="reports_page_email"
-
-            ):
-
+            # Load email configuration safely
+            def _get_app_email_config():
+                cfg = {"sender": "", "password": "", "admin": ""}
+                if "email_config" in st.session_state:
+                    return st.session_state["email_config"]
                 try:
+                    if hasattr(st, "secrets") and "email" in st.secrets:
+                        sec = st.secrets["email"]
+                        return {
+                            "sender": sec.get("sender", ""),
+                            "password": sec.get("password", ""),
+                            "admin": sec.get("admin", "")
+                        }
+                except Exception:
+                    pass
+                import tomllib
+                candidate_paths = [
+                    Path(".streamlit/secrets.toml"),
+                    Path("streamlit-detection-tracking - app/.streamlit/secrets.toml"),
+                    Path(__file__).resolve().parent / ".streamlit" / "secrets.toml",
+                ]
+                for cp in candidate_paths:
+                    if cp.exists():
+                        try:
+                            with open(cp, "rb") as fp:
+                                data = tomllib.load(fp)
+                                if "email" in data:
+                                    return {
+                                        "sender": data["email"].get("sender", ""),
+                                        "password": data["email"].get("password", ""),
+                                        "admin": data["email"].get("admin", "")
+                                    }
+                        except Exception:
+                            pass
+                return cfg
 
-                    sender = st.secrets["email"]["sender"]
+            email_cfg = _get_app_email_config()
+            cur_sender = email_cfg.get("sender", "")
+            cur_pass = email_cfg.get("password", "")
+            cur_admin = email_cfg.get("admin", "")
 
-                    password = st.secrets["email"]["password"]
+            is_dummy_or_empty = (
+                not cur_sender or
+                not cur_pass or
+                not cur_admin or
+                "your_email" in cur_sender.lower() or
+                "your_16_character" in cur_pass.lower() or
+                "example.com" in cur_admin.lower()
+            )
 
-                    admin = st.secrets["email"]["admin"]
+            if st.button(
+                "Send Report to Admin",
+                width="stretch",
+                key="reports_page_email"
+            ):
+                if is_dummy_or_empty:
+                    st.warning("⚠️ Email credentials are not configured yet! Please enter your Gmail address, 16-character App Password, and Admin email in the settings below.")
+                else:
+                    try:
+                        with st.spinner("Connecting to Gmail SMTP and sending report..."):
+                            msg = EmailMessage()
+                            msg["Subject"] = "Waste Detection and Classification Report"
+                            msg["From"] = cur_sender
+                            msg["To"] = cur_admin
+                            msg.set_content(
+                                "Please find the latest waste detection "
+                                "report attached as a CSV file.\n\n"
+                                "This report was generated by the "
+                                "Waste Detection and Classification System."
+                            )
+                            msg.add_attachment(
+                                report_csv,
+                                maintype="text",
+                                subtype="csv",
+                                filename="waste_detection_report.csv",
+                            )
 
+                            import socket
+                            with smtplib.SMTP_SSL("smtp.gmail.com", 465, timeout=15) as smtp:
+                                smtp.login(cur_sender, cur_pass)
+                                smtp.send_message(msg)
 
+                            st.success(f"Report emailed to {cur_admin} successfully!")
+                    except smtplib.SMTPAuthenticationError:
+                        st.error("Authentication failed: Please check your Gmail address and 16-character App Password.\n\nNote: If 2-Step Verification is enabled, you must use a Google App Password from https://myaccount.google.com/apppasswords rather than your regular account password.")
+                    except (socket.timeout, TimeoutError):
+                        st.error("Connection timed out: Unable to reach smtp.gmail.com within 15 seconds. Please check your internet connection or firewall.")
+                    except Exception as e:
+                        st.error(f"Failed to send email: {e}")
 
-                    msg = EmailMessage()
+            # Expandable configuration section for user convenience
+            with st.expander("⚙️ Email / SMTP Configuration", expanded=is_dummy_or_empty):
+                st.markdown(
+                    "<div style='font-size: 0.85rem; color: #555; margin-bottom: 8px;'>"
+                    "Configure your Gmail SMTP settings to enable emailing reports to admins.<br>"
+                    "💡 <b>Gmail requires a 16-character App Password:</b> "
+                    "Go to <a href='https://myaccount.google.com/apppasswords' target='_blank'>myaccount.google.com/apppasswords</a> to generate one."
+                    "</div>",
+                    unsafe_allow_html=True
+                )
+                input_sender = st.text_input("Sender Gmail Address", value=cur_sender if not ("your_email" in cur_sender) else "", placeholder="your_email@gmail.com", key="smtp_cfg_sender")
+                input_pass = st.text_input("16-character App Password", value=cur_pass if not ("your_16_character" in cur_pass) else "", type="password", placeholder="xxxx xxxx xxxx xxxx", key="smtp_cfg_pass")
+                input_admin = st.text_input("Admin / Recipient Email", value=cur_admin if not ("example.com" in cur_admin) else "", placeholder="admin@example.com", key="smtp_cfg_admin")
 
-                    msg["Subject"] = "Waste Detection Report"
-
-                    msg["From"] = sender
-
-                    msg["To"] = admin
-
-
-
-                    msg.set_content(
-
-                        "Please find the latest waste detection "
-
-                        "report attached as a CSV file.\n\n"
-
-                        "This report was generated by the "
-
-                        "Waste Detection and Classification System."
-
-                    )
-
-
-
-                    msg.add_attachment(
-
-                        report_csv,
-
-                        maintype="text",
-
-                        subtype="csv",
-
-                        filename="waste_detection_report.csv",
-
-                    )
-
-
-
-                    with smtplib.SMTP_SSL(
-
-                        "smtp.gmail.com", 465
-
-                    ) as smtp:
-
-                        smtp.login(sender, password)
-
-                        smtp.send_message(msg)
-
-
-
-                    st.success(
-
-                        "Report emailed to the admin successfully!"
-
-                    )
-
-
-
-                except Exception as e:
-
-                    st.error(f"Failed to send email: {e}")
-
-
-
-
+                if st.button("💾 Save Email Configuration", width="stretch", key="save_smtp_cfg_btn"):
+                    if not input_sender or not input_pass or not input_admin:
+                        st.error("Please fill out all three fields (Sender, App Password, and Admin email).")
+                    else:
+                        st.session_state["email_config"] = {
+                            "sender": input_sender.strip(),
+                            "password": input_pass.strip(),
+                            "admin": input_admin.strip()
+                        }
+                        toml_content = f'# Streamlit Email Configuration for Waste Detection Reports\n[email]\nsender = "{input_sender.strip()}"\npassword = "{input_pass.strip()}"\nadmin = "{input_admin.strip()}"\n'
+                        for sp in [Path(".streamlit/secrets.toml"), Path("streamlit-detection-tracking - app/.streamlit/secrets.toml")]:
+                            try:
+                                sp.parent.mkdir(parents=True, exist_ok=True)
+                                sp.write_text(toml_content, encoding="utf-8")
+                            except Exception:
+                                pass
+                        st.success("Credentials saved successfully! You can now send reports directly.")
+                        st.rerun()
 
         # ====================================================
 
@@ -11471,7 +11513,7 @@ elif page == "⚙️ Settings":
 
             max_value=100,
 
-            value=10,
+            value=35,
 
             step=5,
 
