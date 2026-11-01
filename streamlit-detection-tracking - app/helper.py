@@ -8,14 +8,17 @@ from pathlib import Path
 @st.cache_resource
 def load_model(model_path):
     """
-    Loads a YOLO object detection model from the specified model_path.
+    Loads a YOLO or HybridWasteDetector object detection model from the specified model_path.
 
     Parameters:
-        model_path (str): The path to the YOLO model file.
+        model_path (str or Path): The path to the model file or 'hybrid'.
 
     Returns:
-        A YOLO object detection model.
+        A YOLO object detection model or HybridWasteDetector.
     """
+    if str(model_path) == "hybrid" or "hybrid" in str(model_path).lower():
+        from hybrid_detector import HybridWasteDetector
+        return HybridWasteDetector()
     model = YOLO(model_path)
     return model
 
@@ -67,10 +70,10 @@ def _display_detected_frames(conf, model, st_frame, image, is_display_tracking=N
 
     # Display object tracking, if specified
     if is_display_tracking:
-        res = model.track(image, conf=conf, iou=0.45, agnostic_nms=True, persist=True, tracker=tracker)
+        res = model.track(image, conf=conf, iou=0.45, agnostic_nms=False, persist=True, tracker=tracker)
     else:
         # Predict the objects in the image using the YOLOv8 model
-        res = model.predict(image, conf=conf, iou=0.45, agnostic_nms=True)
+        res = model.predict(image, conf=conf, iou=0.45, agnostic_nms=False)
 
     # # Plot the detected objects on the video frame
     res_plotted = res[0].plot()
