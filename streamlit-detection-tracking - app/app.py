@@ -698,14 +698,13 @@ pages = [
     "Dashboard",
     "Detection",
     "Analytics",
-    "Reports",
     "Settings"
 ]
 
 if "page" not in st.session_state:
     st.session_state.page = "Home"
 
-nav_columns = st.columns([2.3, 1, 1, 1, 1, 1, 1])
+nav_columns = st.columns([2.3, 1, 1, 1, 1, 1])
 
 # Brand Lockup
 with nav_columns[0]:
@@ -1018,8 +1017,8 @@ elif page == "Dashboard":
             st.session_state.page = "Detection"
             st.rerun()
     with qa2:
-        if st.button("Open Reports Center", type="secondary", use_container_width=True, key="dash_open_reports"):
-            st.session_state.page = "Reports"
+        if st.button("View Detection & Reports", type="secondary", use_container_width=True, key="dash_open_reports"):
+            st.session_state.page = "Detection"
             st.rerun()
 
 # ============================================================
@@ -1079,12 +1078,33 @@ elif page == "Detection":
         </div>
         """)
 
-        source_img = st.file_uploader(
-            "Choose a waste image to analyze",
-            type=("jpg", "jpeg", "png", "bmp", "webp"),
-            label_visibility="collapsed",
-            key="detection_image_uploader"
+        # Let users choose between capturing a new image and browsing their device.
+        upload_method = st.radio(
+            "How would you like to add an image?",
+            options=("Browse files", "Use camera"),
+            horizontal=True,
+            key="detection_upload_method"
         )
+
+        if upload_method == "Use camera":
+            st.caption("Take a photo of the waste item using your device camera.")
+            source_img = st.camera_input(
+                "Capture waste image",
+                key="detection_camera_input"
+            )
+            if source_img is None:
+                st.info(
+                    "Allow camera access when your browser asks. "
+                    "If camera access is unavailable, select **Browse files** instead."
+                )
+        else:
+            st.caption("Choose an existing JPG, JPEG, PNG, BMP, or WEBP image.")
+            source_img = st.file_uploader(
+                "Choose a waste image to analyze",
+                type=("jpg", "jpeg", "png", "bmp", "webp"),
+                label_visibility="collapsed",
+                key="detection_image_uploader"
+            )
 
         # ----------------------------------------------------
         # BEFORE IMAGE UPLOAD STATE
@@ -1310,7 +1330,7 @@ elif page == "Detection":
                     """)
 
             # ------------------------------------------------
-            # SECTIONS C, D & E: SUMMARY, ANALYSIS & ACTIONS
+            # SECTIONS C & E: SUMMARY & ACTIONS
             # ------------------------------------------------
             if st.session_state.get("has_run_detection", False) and st.session_state.get("detection_stats"):
                 stats = st.session_state["detection_stats"]
@@ -1364,68 +1384,119 @@ elif page == "Detection":
                     </div>
                     """)
 
-                # SECTION D: Additional Analysis (Table + Chart)
-                st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
+                # ------------------------------------------------
+                # SECTION E: AUTOMATIC DETECTION REPORT
+                # ------------------------------------------------
+                st.markdown("<div style='height: 22px;'></div>", unsafe_allow_html=True)
                 st.html("""
                 <div class="section-head">
-                    <div class="page-eyebrow">CLASSIFICATION BREAKDOWN</div>
-                    <div class="section-head-title">D. Additional Analysis</div>
-                    <div class="section-head-subtitle">Category-wise object counts, confidence scores, and disposal stream allocations.</div>
+                    <div class="page-eyebrow">AUTOMATIC REPORT</div>
+                    <div class="section-head-title">E. Detection Report</div>
+                    <div class="section-head-subtitle">This report is generated automatically from the latest YOLO detection.</div>
                 </div>
                 """)
 
-                an_col1, an_col2 = st.columns([1.5, 1], gap="medium")
-                with an_col1:
-                    st.html("""
-                    <div class="ui-card" style="padding: 18px 20px 14px;">
-                        <div style="font-size: 14px; font-weight: 750; color: #17352b; margin-bottom: 12px;">Category-wise Breakdown</div>
-                    """)
-                    analysis_table_data = []
-                    for cat, data in stats.items():
-                        cat_conf = (data["conf_sum"] / data["count"]) * 100
-                        cat_share = (data["count"] / total_items) * 100
-                        stream = "Organic Green Bin -> Composting" if cat == "BIODEGRADABLE" else "Blue Bin -> Automated MRF"
-                        analysis_table_data.append({
-                            "Category": cat,
-                            "Count": data["count"],
-                            "Share": f"{cat_share:.1f}%",
-                            "Avg Confidence": f"{cat_conf:.1f}%",
-                            "Disposal Stream": stream
-                        })
-                    st.dataframe(pd.DataFrame(analysis_table_data), use_container_width=True, hide_index=True)
-                    st.html("</div>")
-
-                with an_col2:
-                    st.html("""
-                    <div class="ui-card" style="padding: 18px 20px 10px;">
-                        <div style="font-size: 14px; font-weight: 750; color: #17352b; margin-bottom: 8px;">Material Distribution</div>
-                    """)
-                    chart_df = pd.DataFrame({
-                        "Category": list(stats.keys()),
-                        "Items": [item["count"] for item in stats.values()]
+                report_data = []
+                for category, data in stats.items():
+                    cat_count = data["count"]
+                    avg_conf = (data["conf_sum"] / cat_count) * 100 if cat_count else 0
+                    share = (cat_count / total_items) * 100 if total_items else 0
+                    report_data.append({
+                        "Waste Category": category,
+                        "Quantity": cat_count,
+                        "Percentage": f"{share:.1f}%",
+                        "Average Confidence": f"{avg_conf:.1f}%"
                     })
-                    st.bar_chart(chart_df.set_index("Category"), use_container_width=True)
-                    st.html("</div>")
+                report_df = pd.DataFrame(report_data)
+                st.dataframe(report_df, use_container_width=True, hide_index=True)
 
-                # SECTION E: Action Buttons
-                st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
-                st.html("""
-                <div class="ui-card" style="padding: 18px 22px;">
-                    <div style="font-size: 14px; font-weight: 800; color: #17352b; margin-bottom: 4px;">E. Next Actions</div>
-                    <div style="font-size: 12px; color: #6b7d75; margin-bottom: 14px;">Review in-depth telemetry or compile a full compliance report.</div>
-                """)
+                report_csv = report_df.to_csv(index=False).encode("utf-8")
+                pdf_path = st.session_state.get("last_pdf_path")
+                pdf_bytes = None
+                if pdf_path and Path(pdf_path).exists():
+                    try:
+                        with open(pdf_path, "rb") as pdf_file:
+                            pdf_bytes = pdf_file.read()
+                    except OSError as pdf_error:
+                        st.warning(f"The PDF report could not be opened: {pdf_error}")
 
-                act1, act2 = st.columns(2)
-                with act1:
-                    if st.button("View Detailed Analytics", type="primary", use_container_width=True, key="det_act_analytics"):
+                if not pdf_bytes and generate_report is not None:
+                    try:
+                        results_dir = Path("results")
+                        results_dir.mkdir(parents=True, exist_ok=True)
+                        generated_pdf, _ = generate_report.generate_user_waste_report(
+                            detected_items=st.session_state.get("detected_items", []),
+                            image_name=st.session_state.get("last_uploaded_name", "waste_detection.jpg"),
+                            output_folder=str(results_dir)
+                        )
+                        if generated_pdf and Path(generated_pdf).exists():
+                            pdf_path = str(generated_pdf)
+                            st.session_state["last_pdf_path"] = pdf_path
+                            with open(pdf_path, "rb") as pdf_file:
+                                pdf_bytes = pdf_file.read()
+                    except Exception as report_error:
+                        st.warning(f"PDF report generation failed: {report_error}")
+
+                # Keep report downloads together, with the two primary actions side by side.
+                report_actions = st.columns(4 if pdf_bytes else 3)
+                with report_actions[0]:
+                    st.download_button(
+                        "Download CSV Report", data=report_csv,
+                        file_name="waste_detection_report.csv", mime="text/csv",
+                        use_container_width=True, key="detection_download_csv_btn"
+                    )
+                if pdf_bytes:
+                    with report_actions[1]:
+                        st.download_button(
+                            "Download PDF Report", data=pdf_bytes,
+                            file_name=Path(pdf_path).name if pdf_path else "waste_detection_report.pdf",
+                            mime="application/pdf", use_container_width=True,
+                            key="detection_download_pdf_btn"
+                        )
+                    email_column = report_actions[2]
+                    analytics_column = report_actions[3]
+                else:
+                    email_column = report_actions[1]
+                    analytics_column = report_actions[2]
+                    st.caption("PDF report is not available right now; the CSV report is ready to download.")
+
+                with email_column:
+                    send_email_clicked = st.button(
+                        "Send Report to Admin", type="primary",
+                        use_container_width=True, key="detection_email_report_btn"
+                    )
+                with analytics_column:
+                    if st.button(
+                        "View Detailed Analytics", type="secondary",
+                        use_container_width=True, key="det_act_analytics"
+                    ):
                         st.session_state.page = "Analytics"
                         st.rerun()
-                with act2:
-                    if st.button("Open Waste Reports", type="secondary", use_container_width=True, key="det_act_reports"):
-                        st.session_state.page = "Reports"
-                        st.rerun()
 
-                st.html("</div>")
+                if send_email_clicked:
+                    with st.spinner("Sending the detection report to the administrator..."):
+                        summary_metrics = {
+                            "total_items": total_items,
+                            "unique_categories": unique_categories,
+                            "dominant_category": dominant_category
+                        }
+                        success, message = email_service.send_waste_report_email(
+                            report_df=report_df,
+                            report_csv=report_csv,
+                            pdf_path=pdf_path,
+                            summary_metrics=summary_metrics,
+                            image_name=st.session_state.get("last_uploaded_name", "waste_detection.jpg")
+                        )
+                    if success:
+                        st.success(message)
+                        st.toast("Report sent to administrator.")
+                    else:
+                        st.error(message)
+                        with st.expander("How to configure email credentials"):
+                            st.markdown("""
+                            Configure SMTP_HOST, SMTP_PORT, SMTP_USERNAME, SMTP_PASSWORD, and ADMIN_EMAIL
+                            in your project .env file or Streamlit secrets. For Gmail, use an App Password.
+                            """)
 
             elif st.session_state.get("has_run_detection", False) and not st.session_state.get("detection_stats"):
                 st.info("No waste objects were detected with the current confidence threshold. Try adjusting the threshold slider above and clicking Detect Waste again.")
@@ -1629,262 +1700,6 @@ elif page == "Analytics":
         if st.button("Run Live Detection", type="primary", key="analytics_run_det"):
             st.session_state.page = "Detection"
             st.rerun()
-
-# ============================================================
-# PAGE: REPORTS (EMAIL & EXPORT CENTER)
-# ============================================================
-
-elif page == "Reports":
-
-    st.html("""
-    <div class="page-header">
-        <div>
-            <div class="page-eyebrow">WASTEAI &bull; REPORTING CENTER</div>
-            <h1 class="page-title">Waste Reports</h1>
-            <div class="page-description">Generate, review, download, and email structured waste classification reports.</div>
-        </div>
-        <div class="ui-badge-ready">
-            <span class="ui-badge-dot"></span>
-            Report Ready
-        </div>
-    </div>
-    """)
-
-    has_live_data = ("detection_stats" in st.session_state and st.session_state["detection_stats"])
-
-    if not has_live_data:
-        st.html("""
-        <div style="background: #ffffff; border: 1px solid #dce8e0; border-radius: 12px; padding: 14px 18px; margin-bottom: 20px;">
-            <div style="font-size: 13px; font-weight: 750; color: #176044;">Baseline Report Preview</div>
-            <div style="font-size: 12px; color: #63756d; margin-top: 2px;">
-                Displaying default sample report data. Run a detection in the Detection tab to update with your live session results.
-            </div>
-        </div>
-        """)
-        stats = {
-            "PLASTIC": {"count": 4, "conf_sum": 3.72},
-            "CARDBOARD": {"count": 2, "conf_sum": 1.76},
-            "GLASS": {"count": 1, "conf_sum": 0.92},
-            "METAL": {"count": 2, "conf_sum": 1.84},
-            "BIODEGRADABLE": {"count": 3, "conf_sum": 2.61},
-            "PAPER": {"count": 1, "conf_sum": 0.88}
-        }
-    else:
-        stats = st.session_state["detection_stats"]
-
-    total_items = sum(item["count"] for item in stats.values())
-    unique_categories = len(stats)
-    dominant_category = max(stats.items(), key=lambda x: x[1]["count"])[0]
-
-    # Overview KPIs
-    st.html("""
-    <div class="section-head" style="margin-top: 0;">
-        <div class="section-head-title">Report Overview</div>
-        <div class="section-head-subtitle">Key performance metrics of the waste detection report.</div>
-    </div>
-    """)
-
-    r1, r2, r3 = st.columns(3)
-    with r1:
-        st.html(f"""
-        <div class="kpi-card">
-            <div class="kpi-label">TOTAL WASTE ITEMS</div>
-            <div class="kpi-value">{total_items}</div>
-            <div class="kpi-meta">Objects detected</div>
-        </div>
-        """)
-    with r2:
-        st.html(f"""
-        <div class="kpi-card">
-            <div class="kpi-label">CATEGORIES IDENTIFIED</div>
-            <div class="kpi-value">{unique_categories}</div>
-            <div class="kpi-meta">Distinct classifications</div>
-        </div>
-        """)
-    with r3:
-        st.html(f"""
-        <div class="kpi-card">
-            <div class="kpi-label">DOMINANT CATEGORY</div>
-            <div class="kpi-value" style="font-size: 21px;">{dominant_category}</div>
-            <div class="kpi-meta">Highest proportion</div>
-        </div>
-        """)
-
-    # Table breakdown
-    st.html("""
-    <div class="section-head" style="margin-top: 24px;">
-        <div class="section-head-title">Detection Report Table</div>
-        <div class="section-head-subtitle">Structured tabular breakdown of each classified material stream.</div>
-    </div>
-    """)
-
-    report_data = []
-    for category, data in stats.items():
-        avg_conf = (data["conf_sum"] / data["count"]) * 100
-        pct = (data["count"] / total_items) * 100 if total_items > 0 else 0
-        report_data.append({
-            "Waste Category": category,
-            "Quantity": data["count"],
-            "Percentage": f"{pct:.1f}%",
-            "Average Confidence": f"{avg_conf:.1f}%"
-        })
-
-    report_df = pd.DataFrame(report_data)
-
-    st.dataframe(
-        report_df,
-        use_container_width=True,
-        hide_index=True,
-        column_config={
-            "Waste Category": st.column_config.TextColumn("Waste Category"),
-            "Quantity": st.column_config.NumberColumn("Quantity", format="%d"),
-            "Percentage": st.column_config.TextColumn("Percentage"),
-            "Average Confidence": st.column_config.TextColumn("Average Confidence")
-        }
-    )
-
-    # --------------------------------------------------------
-    # REPORT ACTIONS & DISPATCH
-    # --------------------------------------------------------
-    report_csv = report_df.to_csv(index=False).encode("utf-8")
-
-    # Generate or locate PDF report
-    pdf_path = None
-    pdf_bytes = None
-    if generate_report is not None:
-        try:
-            res_dir = Path("results")
-            res_dir.mkdir(parents=True, exist_ok=True)
-            source_name = st.session_state.get("last_uploaded_name", "waste_detection_sample.jpg")
-            detected_items = st.session_state.get("detected_items", None)
-            generated_pdf, _ = generate_report.generate_user_waste_report(
-                detected_items=detected_items,
-                image_name=source_name,
-                output_folder=str(res_dir)
-            )
-            if generated_pdf and Path(generated_pdf).exists():
-                pdf_path = str(generated_pdf)
-                with open(pdf_path, "rb") as pf:
-                    pdf_bytes = pf.read()
-        except Exception as pe:
-            print(f"[Notice] PDF report rendering: {pe}")
-
-    st.html("""
-    <div class="ui-card" style="margin-top: 20px; padding: 22px 24px;">
-        <div style="font-size: 16px; font-weight: 800; color: #17352b;">Report Actions</div>
-        <div style="font-size: 12px; color: #6a7c74; margin-top: 2px; margin-bottom: 16px;">
-            Download structured files or email the compliance report directly to system administration.
-        </div>
-    """)
-
-    if pdf_bytes:
-        btn_c1, btn_c2, btn_c3 = st.columns(3)
-        with btn_c1:
-            st.download_button(
-                label="Download CSV Report",
-                data=report_csv,
-                file_name="waste_detection_report.csv",
-                mime="text/csv",
-                use_container_width=True,
-                key="reports_download_csv_btn"
-            )
-        with btn_c2:
-            st.download_button(
-                label="Download PDF Report",
-                data=pdf_bytes,
-                file_name=Path(pdf_path).name if pdf_path else "waste_detection_report.pdf",
-                mime="application/pdf",
-                use_container_width=True,
-                key="reports_download_pdf_btn"
-            )
-        with btn_c3:
-            send_email_clicked = st.button(
-                label="Send Report to Admin",
-                type="primary",
-                use_container_width=True,
-                key="reports_email_btn"
-            )
-    else:
-        btn_c1, btn_c2 = st.columns(2)
-        with btn_c1:
-            st.download_button(
-                label="Download Report (CSV)",
-                data=report_csv,
-                file_name="waste_detection_report.csv",
-                mime="text/csv",
-                use_container_width=True,
-                key="reports_download_csv_btn"
-            )
-        with btn_c2:
-            send_email_clicked = st.button(
-                label="Send Report to Admin",
-                type="primary",
-                use_container_width=True,
-                key="reports_email_btn"
-            )
-
-    st.html("</div>")
-
-    # Handle Send Report to Admin
-    if send_email_clicked:
-        with st.spinner("Dispatching waste detection report to administrator email..."):
-            summary_metrics = {
-                "total_items": total_items,
-                "unique_categories": unique_categories,
-                "dominant_category": dominant_category
-            }
-            img_name = st.session_state.get("last_uploaded_name", "waste_detection_sample.jpg")
-
-            success, message = email_service.send_waste_report_email(
-                report_df=report_df,
-                report_csv=report_csv,
-                pdf_path=pdf_path,
-                summary_metrics=summary_metrics,
-                image_name=img_name
-            )
-
-        if success:
-            st.success(message)
-            st.toast("Report dispatched to administrator.", icon=None)
-        else:
-            st.error(message)
-            with st.expander("How to configure email credentials"):
-                st.markdown("""
-                **To enable automated email delivery:**
-                
-                1. Create a `.env` file in the project root (see `.env.example`), OR create `.streamlit/secrets.toml`.
-                2. Configure the following variables:
-                ```ini
-                SMTP_HOST=smtp.gmail.com
-                SMTP_PORT=465
-                SMTP_USERNAME=your-email@gmail.com
-                SMTP_PASSWORD=your-16-char-app-password
-                ADMIN_EMAIL=admin@example.com
-                ```
-                3. For Gmail, generate a 16-character **App Password** from your [Google Account Security Settings](https://myaccount.google.com/apppasswords).
-                """)
-
-    # Metadata cards
-    st.markdown("<div style='height: 8px;'></div>", unsafe_allow_html=True)
-    m_col1, m_col2 = st.columns(2)
-    with m_col1:
-        st.html("""
-        <div class="ui-card" style="padding: 16px 18px;">
-            <div class="kpi-label">DETECTION MODEL</div>
-            <div style="font-size: 14px; font-weight: 750; color: #17352b; margin-top: 4px;">
-                YOLOv8 Deep Neural Network
-            </div>
-        </div>
-        """)
-    with m_col2:
-        st.html("""
-        <div class="ui-card" style="padding: 16px 18px;">
-            <div class="kpi-label">REPORT TYPE</div>
-            <div style="font-size: 14px; font-weight: 750; color: #17352b; margin-top: 4px;">
-                Waste Classification & Material Logging (CSV & PDF)
-            </div>
-        </div>
-        """)
 
 # ============================================================
 # PAGE: SETTINGS
