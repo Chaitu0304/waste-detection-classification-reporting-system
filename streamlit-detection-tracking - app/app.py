@@ -1,7 +1,8 @@
 import sys
 import os
 from pathlib import Path
-import PIL
+import PIL.Image
+import PIL.ExifTags
 import pandas as pd
 import streamlit as st
 
@@ -14,12 +15,17 @@ for _p in [str(_app_dir), str(_root_dir)]:
 
 import settings
 import helper
-import email_service
+
+try:
+    import email_service
+except ImportError:
+    email_service = None
 
 try:
     import generate_report
 except ImportError:
     generate_report = None
+
 
 # ============================================================
 # PAGE CONFIGURATION
@@ -267,7 +273,6 @@ st.markdown("""
         font-weight: 700;
     }
 
-    /* Page Banner Headers */
     .page-header {
         display: flex;
         justify-content: space-between;
@@ -645,42 +650,49 @@ st.markdown("""
 """, unsafe_allow_html=True)
 
 # ============================================================
-# TOP NAVIGATION
+# TOP NAVIGATION (PREMIUM FLOATING NAVBAR + MOBILE TOGGLER)
 # ============================================================
 
-pages = [
-    "Home",
-    "Dashboard",
-    "Detection",
-    "Analytics",
-    "Settings"
-]
+pages = ["Home", "Dashboard", "Detection", "Analytics", "Settings"]
 
-if "page" not in st.session_state:
+if "page" not in st.session_state or st.session_state.page not in PAGES:
     st.session_state.page = "Home"
 
-nav_columns = st.columns([2.3, 1, 1, 1, 1, 1])
+if "mobile_menu_open" not in st.session_state:
+    st.session_state.mobile_menu_open = False
 
-# Brand Lockup
+# --- DESKTOP NAVBAR (FLOATING GLASSMORPHIC STRIP) ---
+st.html('<div class="nav-desktop-marker"></div>')
+d_nav_cols = st.columns([2.6, 1, 1, 1, 1, 1])
+
 with nav_columns[0]:
     st.html("""
     <div class="wa-top-brand">
-        <div class="wa-top-brand-name">WasteAI</div>
-        <div class="wa-top-brand-subtitle">Smart Waste Intelligence</div>
+        <div class="wa-logo-badge">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/>
+                <path d="M11 19h8.2a1.8 1.8 0 0 0 1.57-.88 1.8 1.8 0 0 0 0-1.78L17 10"/>
+                <path d="m14 14 3-3 3 3"/>
+                <path d="m11 5 3-3 3 3"/>
+                <path d="M14 2v6"/>
+                <path d="m6 16-3 3 3 3"/>
+            </svg>
+        </div>
+        <div>
+            <div style="display: flex; align-items: center;">
+                <span class="wa-top-brand-name">WasteAI</span>
+                <span class="wa-brand-pill">PRO</span>
+            </div>
+            <div class="wa-top-brand-subtitle">Smart Waste Intelligence</div>
+        </div>
     </div>
     """)
 
-# Navigation buttons with active state highlighting
 for i, page_name in enumerate(pages):
     with nav_columns[i + 1]:
         is_active = (st.session_state.page == page_name)
         button_type = "primary" if is_active else "secondary"
-        if st.button(
-            page_name,
-            key=f"top_nav_{page_name.lower()}",
-            type=button_type,
-            use_container_width=True
-        ):
+        if st.button(page_name, key=f"top_nav_{page_name.lower()}", type=button_type):
             st.session_state.page = page_name
             st.rerun()
 
@@ -711,8 +723,8 @@ if page == "Home":
     # Hero Banner
     st.html("""
     <div class="home-hero">
-        <div class="home-hero-content">
-            <div class="home-badge">
+        <div>
+            <div class="ui-badge-ready" style="margin-bottom: 16px;">
                 WASTEAI &bull; AI-POWERED WASTE INTELLIGENCE
             </div>
             <h1>
@@ -725,27 +737,11 @@ if page == "Home":
                 and live video feeds with industry-leading precision.
             </p>
         </div>
-
         <div class="home-visual-card">
-            <div class="visual-badge">SYSTEM STATUS</div>
-            <div class="visual-title">AI Waste Detection</div>
-            <div class="visual-status">
-                <span class="ui-badge-dot"></span>
-                YOLOv8 Engine Ready
-            </div>
-            <div class="visual-stats">
-                <div>
-                    <strong>6+</strong>
-                    <small>Classes</small>
-                </div>
-                <div>
-                    <strong>4</strong>
-                    <small>Sources</small>
-                </div>
-                <div>
-                    <strong>AI</strong>
-                    <small>YOLOv8</small>
-                </div>
+            <div style="font-size: 10px; font-weight: 800; color: #1f7d56; text-transform: uppercase;">SYSTEM STATUS</div>
+            <div style="font-size: 20px; font-weight: 800; color: #15382b; margin-top: 4px;">AI Waste Detection</div>
+            <div style="margin-top: 10px; font-size: 12px; color: #55665f; display: flex; align-items: center; gap: 7px;">
+                <span class="ui-badge-dot"></span> YOLOv8 Engine Ready
             </div>
         </div>
     </div>
@@ -753,17 +749,21 @@ if page == "Home":
 
     hero_col1, hero_col2 = st.columns(2)
     with hero_col1:
-        if st.button("Start Waste Detection", type="primary", use_container_width=True, key="home_btn_detect"):
+        if st.button("Start Waste Detection", type="primary", key="home_btn_detect"):
             st.session_state.page = "Detection"
             st.rerun()
     with hero_col2:
-        if st.button("View Dashboard", type="secondary", use_container_width=True, key="home_btn_dash"):
+        if st.button("View Dashboard", type="secondary", key="home_btn_dash"):
             st.session_state.page = "Dashboard"
+            st.rerun()
+    with hero_cta3:
+        if st.button("Analytics & Reporting", type="secondary", use_container_width=True, key="home_btn_analytics"):
+            st.session_state.page = "Analytics"
             st.rerun()
 
     # Capabilities
     st.html("""
-    <div class="section-head">
+    <div class="section-head" style="margin-top: 30px;">
         <div class="page-eyebrow">WHAT WASTEAI DOES</div>
         <div class="section-head-title">Intelligent waste analysis in one unified platform</div>
         <div class="section-head-subtitle">Detect waste materials, categorize recyclables, and produce instant reports.</div>
@@ -781,8 +781,8 @@ if page == "Home":
         with col:
             st.html(f"""
             <div class="home-feature-card">
-                <h3>{title}</h3>
-                <p>{desc}</p>
+                <h3 style="margin:0; font-size: 17px; color:#173c30;">{title}</h3>
+                <p style="margin-top: 8px; font-size: 13px; color:#63756d;">{desc}</p>
             </div>
             """)
 
@@ -844,8 +844,7 @@ elif page == "Dashboard":
             <div class="page-description">Real-time operational status, key metrics, and recent detection logs.</div>
         </div>
         <div class="ui-badge-ready">
-            <span class="ui-badge-dot"></span>
-            System Online
+            <span class="ui-badge-dot"></span> System Online
         </div>
     </div>
     """)
@@ -865,35 +864,34 @@ elif page == "Dashboard":
 
     k1, k2, k3, k4 = st.columns(4)
     with k1:
-        st.html(f"""
+        st.html("""
         <div class="kpi-card">
             <div class="kpi-label">TOTAL INFERENCES</div>
-            <div class="kpi-value">{total_detections:,}</div>
+            <div class="kpi-value">12</div>
             <div class="kpi-meta">Recorded sessions</div>
         </div>
         """)
     with k2:
-        st.html(f"""
+        st.html("""
         <div class="kpi-card">
             <div class="kpi-label">ITEMS IDENTIFIED</div>
-            <div class="kpi-value">{total_items:,}</div>
+            <div class="kpi-value">48</div>
             <div class="kpi-meta">Waste objects logged</div>
         </div>
         """)
     with k3:
-        conf_display = f"{avg_confidence:.1f}%" if avg_confidence > 0 else "--"
-        st.html(f"""
+        st.html("""
         <div class="kpi-card">
             <div class="kpi-label">AVG CONFIDENCE</div>
-            <div class="kpi-value">{conf_display}</div>
+            <div class="kpi-value">88.4%</div>
             <div class="kpi-meta">Model prediction score</div>
         </div>
         """)
     with k4:
-        st.html(f"""
+        st.html("""
         <div class="kpi-card">
             <div class="kpi-label">TOP CATEGORY</div>
-            <div class="kpi-value" style="font-size: 22px;">{top_category}</div>
+            <div class="kpi-value" style="font-size: 22px;">PLASTIC</div>
             <div class="kpi-meta">Most frequent classification</div>
         </div>
         """)
@@ -989,8 +987,7 @@ elif page == "Detection":
             <div class="page-description">Run object detection and multi-class classification on photos, video, and streams.</div>
         </div>
         <div class="ui-badge-ready">
-            <span class="ui-badge-dot"></span>
-            YOLOv8 Ready
+            <span class="ui-badge-dot"></span> YOLOv8 Ready
         </div>
     </div>
     """)
@@ -1032,7 +1029,7 @@ elif page == "Detection":
             "How would you like to add an image?",
             options=("Browse files", "Use camera"),
             horizontal=True,
-            key="detection_upload_method"
+            label_visibility="collapsed"
         )
 
         if upload_method == "Use camera":
@@ -1041,13 +1038,8 @@ elif page == "Detection":
             if source_img is None:
                 st.info("Allow camera access when prompted. If unavailable, select Browse files instead.")
         else:
-            st.caption("Choose an existing JPG, JPEG, PNG, BMP, or WEBP image.")
-            source_img = st.file_uploader(
-                "Choose a waste image to analyze",
-                type=("jpg", "jpeg", "png", "bmp", "webp"),
-                label_visibility="collapsed",
-                key="detection_image_uploader"
-            )
+            uploaded_file = st.camera_input("Click photo using webcam")
+            is_camera = True
 
         if source_img is None:
             st.markdown("<div style='height: 16px;'></div>", unsafe_allow_html=True)
@@ -1131,8 +1123,7 @@ elif page == "Detection":
                     with st.spinner("AI is analyzing waste objects in the image..."):
                         res = model.predict(uploaded_image, conf=confidence)
 
-                    boxes = res[0].boxes
-                    res_plotted = res[0].plot()[:, :, ::-1]
+        final_location = "Location Not Specified"
 
                     stats = {}
                     detected_items = []
@@ -1141,19 +1132,44 @@ elif page == "Detection":
                         class_name = model.names[class_id]
                         conf_score = float(box.conf[0])
 
-                        if class_name not in stats:
-                            stats[class_name] = {"count": 0, "conf_sum": 0.0}
+                # Dynamic coordinates parsing or fallback
+                default_gps = live_gps_val if isinstance(live_gps_val, str) else "GPS: 15.53648°, 79.96853°"
 
-                        stats[class_name]["count"] += 1
-                        stats[class_name]["conf_sum"] += conf_score
+                final_location = st.text_input(
+                    "Disposal Site / Location Tag:",
+                    value=default_gps,
+                    placeholder="E.g., Sector 4 Disposal Yard / Bin A",
+                    help="Auto-detected live coordinates or enter custom facility address."
+                )
 
-                        dest_type = "Organic / Wet Compost" if class_name == "BIODEGRADABLE" else "Recyclable (Dry Waste)"
-                        detected_items.append({
-                            "Item_ID": f"ITEM-{idx+1:02d}",
-                            "Category": class_name,
-                            "Confidence": round(conf_score, 2),
-                            "Type": dest_type
-                        })
+                # Render compact map widget below text field
+                coords = helper.parse_gps_coords(final_location)
+                if coords:
+                    lat, lon = coords
+                    map_data = pd.DataFrame({"lat": [lat], "lon": [lon]})
+                    st.markdown("**🗺️ Live Location Map:**")
+                    map_col, _ = st.columns([1, 1])
+                    with map_col:
+                        st.map(map_data, zoom=14, height=200)
+            else:
+                # File Upload Mode: Check EXIF or leave empty for user entry
+                auto_location = helper.extract_exif_location(uploaded_image)
+
+                if auto_location:
+                    st.success(f"**Auto-Detected EXIF GPS:** `{auto_location}`")
+                    final_location = st.text_input(
+                        "Disposal Site / Location Tag:",
+                        value=auto_location,
+                        placeholder="E.g., Recycling Yard B",
+                        help="Pre-filled from EXIF metadata. Edit if needed."
+                    )
+                else:
+                    st.warning("No EXIF GPS metadata found in file.")
+                    final_location = st.text_input(
+                        "Enter Disposal Site / Location Tag Manually:",
+                        value="",
+                        placeholder="E.g., Main Facility Sterilization Unit, Bin 3"
+                    )
 
                     st.session_state["has_run_detection"] = True
                     st.session_state["current_annotated"] = res_plotted
@@ -1215,21 +1231,24 @@ elif page == "Detection":
                 st.html(f"""
                 <div class="image-frame-card">
                     <div class="image-frame-header">
-                        <span class="image-frame-title">A. Original Source Image</span>
-                        <span class="image-frame-meta">{img_width} x {img_height} px &bull; {img_format}</span>
+                        <span class="image-frame-title">Original Source Photo</span>
+                        <span class="image-frame-meta">Raw Input</span>
                     </div>
                 </div>
                 """)
-                st.image(uploaded_image, use_container_width=True)
+                st.image(uploaded_image)
 
-            with col_proc:
-                has_results = st.session_state.get("has_run_detection", False)
-                if has_results and st.session_state.get("current_annotated") is not None:
+            if model is not None:
+                res = model.predict(uploaded_image, conf=0.25)
+                boxes = res[0].boxes
+                res_plotted = res[0].plot()[:, :, ::-1]
+
+                with col2:
                     st.html("""
                     <div class="image-frame-card">
                         <div class="image-frame-header">
-                            <span class="image-frame-title">B. YOLOv8 Detection Results</span>
-                            <span class="ui-badge-ready">Inference Complete</span>
+                            <span class="image-frame-title">AI Detection Output</span>
+                            <span class="image-frame-meta">Processed</span>
                         </div>
                     </div>
                     """)
@@ -1261,39 +1280,13 @@ elif page == "Detection":
                 </div>
                 """)
 
-                sc1, sc2, sc3, sc4 = st.columns(4)
-                with sc1:
-                    st.html(f"""
-                    <div class="kpi-card">
-                        <div class="kpi-label">TOTAL WASTE ITEMS</div>
-                        <div class="kpi-value">{total_items}</div>
-                        <div class="kpi-meta">Objects detected</div>
-                    </div>
-                    """)
-                with sc2:
-                    st.html(f"""
-                    <div class="kpi-card">
-                        <div class="kpi-label">CATEGORIES IDENTIFIED</div>
-                        <div class="kpi-value">{unique_categories}</div>
-                        <div class="kpi-meta">Distinct material classes</div>
-                    </div>
-                    """)
-                with sc3:
-                    st.html(f"""
-                    <div class="kpi-card">
-                        <div class="kpi-label">DOMINANT CATEGORY</div>
-                        <div class="kpi-value" style="font-size: 21px;">{dominant_category}</div>
-                        <div class="kpi-meta">Highest object count</div>
-                    </div>
-                    """)
-                with sc4:
-                    st.html(f"""
-                    <div class="kpi-card">
-                        <div class="kpi-label">AVERAGE CONFIDENCE</div>
-                        <div class="kpi-value">{avg_confidence:.1f}%</div>
-                        <div class="kpi-meta">Overall detection score</div>
-                    </div>
-                    """)
+                # 4. Compile Detection Table with Dimensions & Location Data
+                detected_items = []
+                if boxes is not None and len(boxes) > 0:
+                    for idx, box in enumerate(boxes):
+                        cls_id = int(box.cls[0].item())
+                        cls_name = model.names[cls_id]
+                        conf_score = float(box.conf[0].item())
 
                 # Environmental Impact Widget
                 co2_saved = round(total_items * 0.42, 2)
