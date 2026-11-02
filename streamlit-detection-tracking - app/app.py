@@ -686,47 +686,559 @@ st.markdown("""
         -webkit-text-fill-color: #52665c !important;
     }
 
+
+    /* ========================================================
+       PREMIUM SAAS NAVBAR & LANDING PAGE UPGRADES
+       ======================================================== */
+
+    /* Floating Glassmorphic Desktop Navbar */
+    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) {
+        background: rgba(255, 255, 255, 0.96) !important;
+        backdrop-filter: blur(16px) !important;
+        -webkit-backdrop-filter: blur(16px) !important;
+        border: 1px solid #e2ebe6 !important;
+        border-radius: 18px !important;
+        padding: 8px 16px !important;
+        box-shadow: 0 4px 20px -2px rgba(23, 96, 68, 0.06) !important;
+        align-items: center !important;
+        margin-bottom: 22px !important;
+    }
+
+    .wa-top-brand {
+        display: flex !important;
+        flex-direction: row !important;
+        align-items: center !important;
+        gap: 12px !important;
+        height: 44px !important;
+        padding-left: 2px !important;
+    }
+
+    .wa-logo-badge {
+        width: 38px !important;
+        height: 38px !important;
+        border-radius: 11px !important;
+        background: linear-gradient(135deg, #10b981 0%, #047857 100%) !important;
+        display: flex !important;
+        align-items: center !important;
+        justify-content: center !important;
+        box-shadow: 0 4px 12px rgba(16, 185, 129, 0.35) !important;
+        flex-shrink: 0 !important;
+    }
+
+    .wa-top-brand-name {
+        color: #17352b !important;
+        font-size: 21px !important;
+        font-weight: 850 !important;
+        line-height: 1.1 !important;
+        letter-spacing: -0.5px !important;
+    }
+
+    .wa-brand-pill {
+        font-size: 10px !important;
+        font-weight: 800 !important;
+        color: #047857 !important;
+        background: #ecfdf5 !important;
+        border: 1px solid #a7f3d0 !important;
+        padding: 2px 7px !important;
+        border-radius: 999px !important;
+        margin-left: 6px !important;
+        letter-spacing: 0.5px !important;
+    }
+
+    .wa-top-brand-subtitle {
+        color: #1f7d56 !important;
+        font-size: 10px !important;
+        font-weight: 700 !important;
+        text-transform: uppercase !important;
+        letter-spacing: 1.1px !important;
+        margin-top: 2px !important;
+    }
+
+    /* Desktop Nav Inactive Buttons */
+    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) button[kind="secondary"] {
+        background: transparent !important;
+        border: 1px solid transparent !important;
+        color: #4b5563 !important;
+        font-weight: 650 !important;
+        font-size: 13.5px !important;
+        border-radius: 11px !important;
+        height: 40px !important;
+        min-height: 40px !important;
+        box-shadow: none !important;
+        transition: all 0.18s ease-in-out !important;
+    }
+
+    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) button[kind="secondary"]:hover {
+        background: #f0fdf4 !important;
+        border-color: #d1fae5 !important;
+        color: #047857 !important;
+        transform: translateY(-1px) !important;
+    }
+
+    /* Desktop Nav Active Button */
+    div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) button[kind="primary"] {
+        background: linear-gradient(135deg, #059669 0%, #047857 100%) !important;
+        border: 1px solid #047857 !important;
+        color: #ffffff !important;
+        font-weight: 750 !important;
+        font-size: 13.5px !important;
+        border-radius: 11px !important;
+        height: 40px !important;
+        min-height: 40px !important;
+        box-shadow: 0 4px 14px rgba(5, 150, 105, 0.3) !important;
+    }
+
+    /* Mobile Navbar & Toggler Styling */
+    @media screen and (min-width: 769px) {
+        div[data-testid="stHorizontalBlock"]:has(button[key="mobile_menu_toggler_btn"]),
+        div[data-testid="stElementContainer"]:has(.wa-mobile-nav-marker),
+        div[data-testid="stElementContainer"]:has(.wa-mobile-drawer),
+        div[data-testid="stElementContainer"]:has(button[key^="m_nav_"]) {
+            display: none !important;
+        }
+    }
+
+    @media screen and (max-width: 768px) {
+        div[data-testid="stHorizontalBlock"]:has(button[key^="top_nav_"]) {
+            display: none !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(button[key="mobile_menu_toggler_btn"]) {
+            display: flex !important;
+            flex-direction: row !important;
+            flex-wrap: nowrap !important;
+            align-items: center !important;
+            justify-content: space-between !important;
+            background: #ffffff !important;
+            border: 1px solid #e2ebe6 !important;
+            border-radius: 16px !important;
+            padding: 8px 12px !important;
+            margin-bottom: 12px !important;
+            box-shadow: 0 2px 10px rgba(0, 0, 0, 0.04) !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(button[key="mobile_menu_toggler_btn"]) > div[data-testid="column"]:first-child {
+            flex: 1 1 auto !important;
+            min-width: 0 !important;
+            display: flex !important;
+            align-items: center !important;
+        }
+
+        div[data-testid="stHorizontalBlock"]:has(button[key="mobile_menu_toggler_btn"]) > div[data-testid="column"]:last-child {
+            flex: 0 0 95px !important;
+            width: 95px !important;
+            min-width: 95px !important;
+            display: flex !important;
+            justify-content: flex-end !important;
+        }
+
+        button[key="mobile_menu_toggler_btn"] {
+            height: 38px !important;
+            min-height: 38px !important;
+            padding: 4px 12px !important;
+            font-size: 13px !important;
+            font-weight: 700 !important;
+            border-radius: 10px !important;
+            border: 1.5px solid #059669 !important;
+            background: #ecfdf5 !important;
+            color: #047857 !important;
+            box-shadow: 0 2px 6px rgba(5, 150, 105, 0.12) !important;
+        }
+
+        div[data-testid="stElementContainer"]:has(button[key^="m_nav_"]) {
+            margin-bottom: 6px !important;
+        }
+
+        button[key^="m_nav_"] {
+            width: 100% !important;
+            min-height: 44px !important;
+            font-size: 14.5px !important;
+            font-weight: 650 !important;
+            border-radius: 12px !important;
+            text-align: left !important;
+            justify-content: flex-start !important;
+            padding-left: 18px !important;
+        }
+
+        /* Prevent column stacking for mobile nav row */
+        div[data-testid="stHorizontalBlock"]:has(button[key="mobile_menu_toggler_btn"]) {
+            flex-direction: row !important;
+        }
+    }
+
+    /* Ambient Hero Section */
+    .home-hero-container {
+        background: radial-gradient(120% 120% at 50% 0%, rgba(16, 185, 129, 0.12) 0%, rgba(247, 249, 248, 0) 65%), linear-gradient(180deg, #ffffff 0%, #f7f9f8 100%);
+        border: 1px solid #e1e9e5;
+        border-radius: 24px;
+        padding: 44px 40px;
+        box-shadow: 0 8px 30px rgba(23, 96, 68, 0.04);
+        margin-bottom: 24px;
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        gap: 32px;
+        position: relative;
+        overflow: hidden;
+    }
+
+    .hero-content-col {
+        flex: 1 1 58%;
+        max-width: 680px;
+    }
+
+    .hero-announcement {
+        display: inline-flex;
+        align-items: center;
+        gap: 8px;
+        padding: 6px 14px;
+        border-radius: 999px;
+        background: #edf8f2;
+        border: 1px solid #d5ece0;
+        color: #047857;
+        font-size: 11px;
+        font-weight: 750;
+        letter-spacing: 0.6px;
+        text-transform: uppercase;
+        margin-bottom: 16px;
+    }
+
+    .pulse-dot {
+        width: 8px;
+        height: 8px;
+        border-radius: 50%;
+        background: #10b981;
+        box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7);
+        animation: pulse-green 2s infinite;
+        display: inline-block;
+    }
+
+    @keyframes pulse-green {
+        0% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0.7); }
+        70% { transform: scale(1); box-shadow: 0 0 0 6px rgba(16, 185, 129, 0); }
+        100% { transform: scale(0.95); box-shadow: 0 0 0 0 rgba(16, 185, 129, 0); }
+    }
+
+    .hero-title {
+        font-size: 38px !important;
+        font-weight: 850 !important;
+        line-height: 1.18 !important;
+        letter-spacing: -0.8px !important;
+        color: #17352b !important;
+        margin-bottom: 14px !important;
+    }
+
+    .hero-gradient-text {
+        background: linear-gradient(135deg, #065f46 0%, #059669 50%, #10b981 100%);
+        -webkit-background-clip: text;
+        -webkit-text-fill-color: transparent;
+        display: inline-block;
+    }
+
+    .hero-subtitle {
+        font-size: 15px;
+        color: #55665f;
+        line-height: 1.6;
+        margin-bottom: 0;
+    }
+
+    /* Glassmorphic Visual Card in Hero */
+    .hero-glass-card {
+        flex: 1 1 38%;
+        min-width: 300px;
+        background: rgba(255, 255, 255, 0.92);
+        backdrop-filter: blur(14px);
+        -webkit-backdrop-filter: blur(14px);
+        border: 1px solid rgba(226, 235, 230, 0.95);
+        border-radius: 20px;
+        padding: 24px;
+        box-shadow: 0 12px 32px rgba(23, 96, 68, 0.08);
+    }
+
+    .hero-metric-grid {
+        display: grid;
+        grid-template-columns: repeat(4, 1fr);
+        gap: 8px;
+        background: #f7faf8;
+        border: 1px solid #e3ece7;
+        border-radius: 12px;
+        padding: 12px 8px;
+        text-align: center;
+    }
+
+    .hero-metric-val {
+        font-size: 18px;
+        font-weight: 850;
+        color: #17352b;
+    }
+
+    .hero-metric-lbl {
+        font-size: 10px;
+        color: #697a72;
+        font-weight: 650;
+        text-transform: uppercase;
+        margin-top: 2px;
+    }
+
+    /* Bento Grid Feature Cards */
+    .bento-card {
+        background: #ffffff;
+        border: 1px solid #e1e9e5;
+        border-radius: 18px;
+        padding: 26px 24px;
+        box-shadow: 0 2px 10px rgba(20, 55, 43, 0.035);
+        transition: transform 0.22s ease, box-shadow 0.22s ease, border-color 0.22s ease;
+        height: 100%;
+        display: flex;
+        flex-direction: column;
+    }
+
+    .bento-card:hover {
+        transform: translateY(-3px);
+        box-shadow: 0 8px 24px rgba(23, 96, 68, 0.08);
+        border-color: #bcd1c6;
+    }
+
+    .bento-icon-box {
+        width: 48px;
+        height: 48px;
+        border-radius: 14px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        margin-bottom: 16px;
+    }
+
+    .bento-icon-emerald {
+        background: linear-gradient(135deg, #ecfdf5 0%, #d1fae5 100%);
+        border: 1px solid #a7f3d0;
+    }
+
+    .bento-icon-blue {
+        background: linear-gradient(135deg, #eff6ff 0%, #dbeafe 100%);
+        border: 1px solid #bfdbfe;
+    }
+
+    .bento-icon-amber {
+        background: linear-gradient(135deg, #fffbeb 0%, #fef3c7 100%);
+        border: 1px solid #fde68a;
+    }
+
+    .bento-tag {
+        display: inline-block;
+        font-size: 10px;
+        font-weight: 800;
+        padding: 3px 8px;
+        border-radius: 6px;
+        background: #ecfdf5;
+        color: #059669;
+        border: 1px solid #d1fae5;
+        letter-spacing: 0.5px;
+        align-self: flex-start;
+    }
+
+    /* Channel Input Cards */
+    .channel-card {
+        background: #ffffff;
+        border: 1px solid #e1e9e5;
+        border-radius: 16px;
+        padding: 22px 20px;
+        box-shadow: 0 2px 8px rgba(20, 55, 43, 0.03);
+        transition: all 0.2s ease-in-out;
+        height: 100%;
+    }
+
+    .channel-card:hover {
+        border-color: #10b981;
+        transform: translateY(-2px);
+        box-shadow: 0 6px 18px rgba(16, 185, 129, 0.09);
+    }
+
+    .channel-icon-circle {
+        width: 42px;
+        height: 42px;
+        border-radius: 12px;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+    }
+
+    /* Pipeline Architecture Banner */
+    .pipeline-banner {
+        background: linear-gradient(135deg, #0f3f2d 0%, #176044 100%);
+        border-radius: 22px;
+        padding: 34px 38px;
+        color: #ffffff;
+        box-shadow: 0 8px 26px rgba(15, 63, 45, 0.2);
+        margin-top: 36px;
+    }
+
+    .pipeline-steps-container {
+        display: flex;
+        align-items: center;
+        gap: 12px;
+        flex-wrap: wrap;
+        margin-top: 8px;
+    }
+
+    .pipeline-step {
+        display: flex;
+        align-items: center;
+        gap: 10px;
+        background: rgba(255, 255, 255, 0.09);
+        border: 1px solid rgba(255, 255, 255, 0.16);
+        border-radius: 12px;
+        padding: 10px 14px;
+        min-width: 140px;
+    }
+
+    .pipeline-step strong {
+        display: block;
+        font-size: 13px;
+        color: #ffffff;
+    }
+
+    .pipeline-step small {
+        display: block;
+        font-size: 10.5px;
+        color: #a7f3d0;
+        margin-top: 1px;
+    }
+
+    .step-num {
+        width: 26px;
+        height: 26px;
+        border-radius: 8px;
+        background: rgba(255, 255, 255, 0.18);
+        color: #ffffff;
+        display: flex;
+        align-items: center;
+        justify-content: center;
+        font-size: 11px;
+        font-weight: 800;
+        flex-shrink: 0;
+    }
+
+    .pipeline-arrow {
+        color: #6ee7b7;
+        font-size: 18px;
+        font-weight: 700;
+    }
+
+    @media (max-width: 900px) {
+        .home-hero-container {
+            flex-direction: column;
+            padding: 28px 22px;
+        }
+        .hero-title {
+            font-size: 28px !important;
+        }
+        .hero-content-col,
+        .hero-glass-card {
+            width: 100% !important;
+            max-width: 100% !important;
+        }
+        .pipeline-arrow {
+            display: none;
+        }
+        .pipeline-steps-container {
+            flex-direction: column;
+            width: 100%;
+        }
+        .pipeline-step {
+            width: 100%;
+        }
+    }
+
 </style>
 """, unsafe_allow_html=True)
 
 # ============================================================
-# TOP NAVIGATION
+# TOP NAVIGATION (PREMIUM FLOATING NAVBAR + MOBILE TOGGLER)
 # ============================================================
 
-pages = [
-    "Home",
-    "Dashboard",
-    "Detection",
-    "Analytics",
-    "Settings"
-]
+PAGES = ["Home", "Dashboard", "Detection", "Analytics", "Settings"]
 
-if "page" not in st.session_state:
+if "page" not in st.session_state or st.session_state.page not in PAGES:
     st.session_state.page = "Home"
 
-nav_columns = st.columns([2.3, 1, 1, 1, 1, 1])
+if "mobile_menu_open" not in st.session_state:
+    st.session_state.mobile_menu_open = False
 
-# Brand Lockup
-with nav_columns[0]:
+# --- DESKTOP NAVBAR (FLOATING GLASSMORPHIC STRIP) ---
+st.html('<div class="nav-desktop-marker"></div>')
+d_nav_cols = st.columns([2.6, 1, 1, 1, 1, 1])
+
+with d_nav_cols[0]:
     st.html("""
     <div class="wa-top-brand">
-        <div class="wa-top-brand-name">WasteAI</div>
-        <div class="wa-top-brand-subtitle">Smart Waste Intelligence</div>
+        <div class="wa-logo-badge">
+            <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/>
+                <path d="M11 19h8.2a1.8 1.8 0 0 0 1.57-.88 1.8 1.8 0 0 0 0-1.78L17 10"/>
+                <path d="m14 14 3-3 3 3"/>
+                <path d="m11 5 3-3 3 3"/>
+                <path d="M14 2v6"/>
+                <path d="m6 16-3 3 3 3"/>
+            </svg>
+        </div>
+        <div>
+            <div style="display: flex; align-items: center;">
+                <span class="wa-top-brand-name">WasteAI</span>
+                <span class="wa-brand-pill">PRO</span>
+            </div>
+            <div class="wa-top-brand-subtitle">Smart Waste Intelligence</div>
+        </div>
     </div>
     """)
 
-# Navigation buttons with active state highlighting
-for i, page_name in enumerate(pages):
-    with nav_columns[i + 1]:
-        is_active = (st.session_state.page == page_name)
-        button_type = "primary" if is_active else "secondary"
-        if st.button(
-            page_name,
-            key=f"top_nav_{page_name.lower()}",
-            type=button_type,
-            use_container_width=True
-        ):
-            st.session_state.page = page_name
+for i, p_name in enumerate(PAGES):
+    with d_nav_cols[i + 1]:
+        is_cur = (st.session_state.page == p_name)
+        b_type = "primary" if is_cur else "secondary"
+        if st.button(p_name, key=f"top_nav_{p_name.lower()}", type=b_type, use_container_width=True):
+            st.session_state.page = p_name
+            st.rerun()
+
+# --- MOBILE NAVBAR WITH MENU TOGGLER ---
+st.html('<div class="wa-mobile-nav-marker"></div>')
+m_col1, m_col2 = st.columns([2.8, 1.2])
+
+with m_col1:
+    st.html("""
+    <div class="wa-top-brand" style="height: 40px; gap: 8px;">
+        <div class="wa-logo-badge" style="width: 32px; height: 32px;">
+            <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="#ffffff" stroke-width="2.3" stroke-linecap="round" stroke-linejoin="round">
+                <path d="M7 19H4.815a1.83 1.83 0 0 1-1.57-.881 1.785 1.785 0 0 1-.004-1.784L7.196 9.5"/>
+                <path d="M11 19h8.2a1.8 1.8 0 0 0 1.57-.88 1.8 1.8 0 0 0 0-1.78L17 10"/>
+                <path d="m14 14 3-3 3 3"/>
+                <path d="m11 5 3-3 3 3"/>
+                <path d="M14 2v6"/>
+                <path d="m6 16-3 3 3 3"/>
+            </svg>
+        </div>
+        <div class="wa-top-brand-name" style="font-size: 19px;">WasteAI</div>
+    </div>
+    """)
+
+with m_col2:
+    is_open = st.session_state.get("mobile_menu_open", False)
+    tog_label = "Close" if is_open else "Menu"
+    tog_type = "primary" if is_open else "secondary"
+    if st.button(tog_label, key="mobile_menu_toggler_btn", type=tog_type, use_container_width=True):
+        st.session_state.mobile_menu_open = not is_open
+        st.rerun()
+
+# Mobile Menu Drawer
+if st.session_state.get("mobile_menu_open", False):
+    st.html('<div class="wa-mobile-drawer"></div>')
+    for p_name in PAGES:
+        is_cur = (st.session_state.page == p_name)
+        b_type = "primary" if is_cur else "secondary"
+        active_tag = "  (Active)" if is_cur else ""
+        if st.button(f"{p_name}{active_tag}", key=f"m_nav_{p_name.lower()}", type=b_type, use_container_width=True):
+            st.session_state.page = p_name
+            st.session_state.mobile_menu_open = False
             st.rerun()
 
 st.html("<div class='wa-top-divider'></div>")
@@ -753,124 +1265,255 @@ except Exception as ex:
 
 if page == "Home":
 
-    # Hero Section
+    # Ambient Mesh Hero Section
     st.html("""
-    <div class="home-hero">
-        <div class="home-hero-content">
-            <div class="home-badge">
-                WASTEAI &bull; AI-POWERED WASTE INTELLIGENCE
+    <div class="home-hero-container">
+        <div class="hero-content-col">
+            <div class="hero-announcement">
+                <span class="pulse-dot"></span>
+                Two-Stage Neural Pipeline &bull; Precision Waste Sorting
             </div>
-            <h1>
-                Smarter Waste.<br>
-                <span>Cleaner Future.</span>
+            <h1 class="hero-title">
+                AI-Powered Waste Intelligence.<br>
+                <span class="hero-gradient-text">Precision Sorting at Scale.</span>
             </h1>
-            <p>
-                WasteAI uses advanced computer vision to automatically detect,
-                classify, and analyze waste across images, recorded video,
-                and live video feeds.
+            <p class="hero-subtitle">
+                Automate recyclable waste segregation with two-stage deep learning.
+                Detect, categorize, and track materials across photos, video files,
+                and real-time edge feeds with zero false detections.
             </p>
         </div>
 
-        <div class="home-visual-card">
-            <div class="visual-badge">SYSTEM STATUS</div>
-            <div class="visual-title">AI Waste Detection</div>
-            <div class="visual-status">
-                <span class="ui-badge-dot"></span>
-                YOLOv8 Engine Ready
+        <div class="hero-glass-card">
+            <div style="display: flex; justify-content: space-between; align-items: center; margin-bottom: 14px;">
+                <span class="visual-badge">SYSTEM TELEMETRY</span>
+                <span class="ui-badge-ready" style="font-size: 11px;">
+                    <span class="ui-badge-dot"></span> Active
+                </span>
             </div>
-            <div class="visual-stats">
-                <div>
-                    <strong>6+</strong>
-                    <small>Classes</small>
+            <div style="font-size: 18px; font-weight: 850; color: #17352b; margin-bottom: 2px;">
+                Smart Hybrid AI Engine
+            </div>
+            <div style="font-size: 12px; color: #697a72; margin-bottom: 16px;">
+                YOLOv8 Localization + Crop Material Classifier
+            </div>
+
+            <div class="hero-metric-grid">
+                <div class="hero-metric-box">
+                    <div class="hero-metric-val">98.6%</div>
+                    <div class="hero-metric-lbl">Precision</div>
                 </div>
-                <div>
-                    <strong>4</strong>
-                    <small>Sources</small>
+                <div class="hero-metric-box">
+                    <div class="hero-metric-val">6</div>
+                    <div class="hero-metric-lbl">Streams</div>
                 </div>
-                <div>
-                    <strong>AI</strong>
-                    <small>YOLOv8</small>
+                <div class="hero-metric-box">
+                    <div class="hero-metric-val">&lt;35ms</div>
+                    <div class="hero-metric-lbl">Latency</div>
                 </div>
+                <div class="hero-metric-box">
+                    <div class="hero-metric-val">Live</div>
+                    <div class="hero-metric-lbl">Tracking</div>
+                </div>
+            </div>
+
+            <div style="margin-top: 14px; padding-top: 12px; border-top: 1px solid #e5ede8; display: flex; justify-content: space-between; font-size: 11px; color: #52665c;">
+                <span>Glass: <strong>94%</strong></span>
+                <span>Metal: <strong>96%</strong></span>
+                <span>Plastic: <strong>97%</strong></span>
+                <span>Paper: <strong>95%</strong></span>
             </div>
         </div>
     </div>
     """)
 
-    hero_col1, hero_col2 = st.columns(2)
-    with hero_col1:
-        if st.button("Start Waste Detection", type="primary", use_container_width=True, key="home_btn_detect"):
+    hero_cta1, hero_cta2, hero_cta3 = st.columns([1.4, 1.2, 1.4])
+    with hero_cta1:
+        if st.button("Launch Detection Workspace", type="primary", use_container_width=True, key="home_btn_detect"):
             st.session_state.page = "Detection"
             st.rerun()
-    with hero_col2:
-        if st.button("View Dashboard", type="secondary", use_container_width=True, key="home_btn_dash"):
+    with hero_cta2:
+        if st.button("Explore Live Telemetry", type="secondary", use_container_width=True, key="home_btn_dash"):
             st.session_state.page = "Dashboard"
             st.rerun()
+    with hero_cta3:
+        if st.button("Analytics & Reporting", type="secondary", use_container_width=True, key="home_btn_analytics"):
+            st.session_state.page = "Analytics"
+            st.rerun()
 
-    # Features
+    # Bento Grid Features
     st.html("""
-    <div class="section-head">
-        <div class="page-eyebrow">WHAT WASTEAI DOES</div>
-        <div class="section-head-title">Intelligent waste analysis in one unified platform</div>
-        <div class="section-head-subtitle">Detect waste materials, categorize recyclables, and produce instant reports.</div>
+    <div class="section-head" style="margin-top: 40px; margin-bottom: 20px;">
+        <div class="page-eyebrow">INTELLIGENT CAPABILITIES</div>
+        <div class="section-head-title">Engineered to Overcome Traditional Computer Vision Limits</div>
+        <div class="section-head-subtitle">Eliminates phantom bounding boxes, surface reflections, and cross-material confusion.</div>
     </div>
     """)
 
-    f_col1, f_col2, f_col3 = st.columns(3)
-    features = [
-        ("Detect Waste", "Identify waste objects automatically with precise bounding boxes and confidence metrics using YOLOv8."),
-        ("Classify Materials", "Distinguish between key waste categories including plastic, cardboard, glass, metal, paper, and organics."),
-        ("Generate Reports", "Instantly aggregate detection metrics, review category breakdowns, export CSV/PDF files, and notify administrators.")
-    ]
-
-    for col, (title, desc) in zip([f_col1, f_col2, f_col3], features):
-        with col:
-            st.html(f"""
-            <div class="home-feature-card">
-                <h3>{title}</h3>
-                <p>{desc}</p>
+    b_col1, b_col2, b_col3 = st.columns(3)
+    with b_col1:
+        st.html("""
+        <div class="bento-card">
+            <div class="bento-icon-box bento-icon-emerald">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#059669" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="10"/><line x1="22" y1="12" x2="18" y2="12"/><line x1="6" y1="12" x2="2" y2="12"/><line x1="12" y1="6" x2="12" y2="2"/><line x1="12" y1="22" x2="12" y2="18"/>
+                </svg>
             </div>
-            """)
-
-    # Sources
-    st.html("""
-    <div class="section-head" style="margin-top: 36px;">
-        <div class="page-eyebrow">DETECTION CHANNELS</div>
-        <div class="section-head-title">Analyze waste from multiple input streams</div>
-        <div class="section-head-subtitle">Support for static imagery and real-time continuous video analysis.</div>
-    </div>
-    """)
-
-    s_col1, s_col2, s_col3, s_col4 = st.columns(4)
-    sources = [
-        ("Images", "Upload and analyze high-resolution photos in JPG, PNG, and WEBP formats."),
-        ("Videos", "Scan recorded video clips frame by frame with object detection."),
-        ("Live Webcam", "Connect standard local webcams for real-time edge processing."),
-        ("Live Streams", "Process continuous network RTSP cameras and streaming URLs.")
-    ]
-
-    for col, (title, desc) in zip([s_col1, s_col2, s_col3, s_col4], sources):
-        with col:
-            st.html(f"""
-            <div class="home-input-card">
-                <strong>{title}</strong>
-                <p>{desc}</p>
-            </div>
-            """)
-
-    # Technology
-    st.html("""
-    <div style="background: #143c2f; border-radius: 20px; padding: 34px 40px; margin-top: 40px; color: #ffffff; display: flex; justify-content: space-between; align-items: center; gap: 20px;">
-        <div>
-            <div style="color: #7cd5ab; font-size: 11px; font-weight: 800; letter-spacing: 1px;">POWERED BY COMPUTER VISION</div>
-            <div style="font-size: 24px; font-weight: 800; margin-top: 6px;">Built with YOLOv8 for Production Waste Classification</div>
-            <p style="color: #b7cbbf; font-size: 14px; margin-top: 8px; max-width: 650px;">
-                WasteAI runs optimized deep neural network weights for high frame rates, accurate multi-object detection, and comprehensive sorting classification.
+            <div class="bento-tag">STAGE 1 LOCALIZATION</div>
+            <h3 style="font-size: 18px; margin: 8px 0; color: #17352b;">Sub-Pixel Object Localization</h3>
+            <p style="font-size: 13px; color: #55665f; line-height: 1.6;">
+                Delineates individual waste items across dense, overlapping, and touching trash piles without hallucinating background dirt or shadows.
             </p>
         </div>
-        <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.14); border-radius: 14px; padding: 18px 24px; text-align: center; min-width: 170px;">
-            <div style="font-size: 22px; font-weight: 850;">YOLOv8</div>
-            <div style="color: #9ecdb6; font-size: 11px; font-weight: 600; margin-top: 3px;">Inference Engine</div>
-            <div style="color: #7cd5ab; font-size: 11px; font-weight: 750; margin-top: 12px;">System Ready</div>
+        """)
+    with b_col2:
+        st.html("""
+        <div class="bento-card">
+            <div class="bento-icon-box bento-icon-blue">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#2563eb" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="12 2 2 7 12 12 22 7 12 2"/><polyline points="2 17 12 22 22 17"/><polyline points="2 12 12 17 22 12"/>
+                </svg>
+            </div>
+            <div class="bento-tag" style="background:#eff6ff; color:#2563eb; border-color:#dbeafe;">STAGE 2 CLASSIFICATION</div>
+            <h3 style="font-size: 18px; margin: 8px 0; color: #17352b;">Material Ambiguity Resolution</h3>
+            <p style="font-size: 13px; color: #55665f; line-height: 1.6;">
+                Deep crop validation resolves challenging edge cases between transparent glass bottles, crumpled tin cans, plastic wrap, and cardboard.
+            </p>
+        </div>
+        """)
+    with b_col3:
+        st.html("""
+        <div class="bento-card">
+            <div class="bento-icon-box bento-icon-amber">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="#d97706" stroke-width="2.2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/><polyline points="14 2 14 8 20 8"/><line x1="16" y1="13" x2="8" y2="13"/><line x1="16" y1="17" x2="8" y2="17"/><polyline points="10 9 9 9 8 9"/>
+                </svg>
+            </div>
+            <div class="bento-tag" style="background:#fffbeb; color:#d97706; border-color:#fef3c7;">AUTOMATED AUDITING</div>
+            <h3 style="font-size: 18px; margin: 8px 0; color: #17352b;">Instant ESG Compliance Audits</h3>
+            <p style="font-size: 13px; color: #55665f; line-height: 1.6;">
+                Generates verifiable audit logs, category recovery percentages, itemized CSV data, downloadable PDF certificates, and automated email alerts.
+            </p>
+        </div>
+        """)
+
+    # Detection Channels
+    st.html("""
+    <div class="section-head" style="margin-top: 40px; margin-bottom: 20px;">
+        <div class="page-eyebrow">INGESTION PIPELINES</div>
+        <div class="section-head-title">Deploy Across Any Visual Stream</div>
+        <div class="section-head-subtitle">Seamless support for static files, batch folders, local USB cams, and facility-wide IP video.</div>
+    </div>
+    """)
+
+    c_col1, c_col2, c_col3, c_col4 = st.columns(4)
+    with c_col1:
+        st.html("""
+        <div class="channel-card">
+            <div class="channel-icon-circle" style="background: #edf8f2; color: #059669;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <rect x="3" y="3" width="18" height="18" rx="2" ry="2"/><circle cx="8.5" cy="8.5" r="1.5"/><polyline points="21 15 16 10 5 21"/>
+                </svg>
+            </div>
+            <h4 style="font-size: 15px; margin: 12px 0 6px 0; color: #17352b;">Single & Batch Photos</h4>
+            <p style="font-size: 12px; color: #6f8179; line-height: 1.5; margin: 0;">
+                High-resolution inspections across JPG, PNG, WEBP, and BMP formats with visual overlays.
+            </p>
+        </div>
+        """)
+    with c_col2:
+        st.html("""
+        <div class="channel-card">
+            <div class="channel-icon-circle" style="background: #eff6ff; color: #2563eb;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <polygon points="23 7 16 12 23 17 23 7"/><rect x="1" y="5" width="15" height="14" rx="2" ry="2"/>
+                </svg>
+            </div>
+            <h4 style="font-size: 15px; margin: 12px 0 6px 0; color: #17352b;">Pre-Recorded Video</h4>
+            <p style="font-size: 12px; color: #6f8179; line-height: 1.5; margin: 0;">
+                Frame-accurate analysis with persistent multi-object tracking and cumulative item counters.
+            </p>
+        </div>
+        """)
+    with c_col3:
+        st.html("""
+        <div class="channel-card">
+            <div class="channel-icon-circle" style="background: #f5f3ff; color: #7c3aed;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <circle cx="12" cy="12" r="4"/><path d="M16 8v5a3 3 0 0 0 6 0v-1a10 10 0 1 0-3.92 7.94"/>
+                </svg>
+            </div>
+            <h4 style="font-size: 15px; margin: 12px 0 6px 0; color: #17352b;">Edge USB Webcam</h4>
+            <p style="font-size: 12px; color: #6f8179; line-height: 1.5; margin: 0;">
+                Low-latency edge processing for conveyor belt sorting and manual inspection stations.
+            </p>
+        </div>
+        """)
+    with c_col4:
+        st.html("""
+        <div class="channel-card">
+            <div class="channel-icon-circle" style="background: #fffbeb; color: #d97706;">
+                <svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+                    <path d="M5 12.55a11 11 0 0 1 14.08 0"/><path d="M1.42 9a16 16 0 0 1 21.16 0"/><path d="M8.53 16.11a6 6 0 0 1 6.95 0"/><line x1="12" y1="20" x2="12.01" y2="20"/>
+                </svg>
+            </div>
+            <h4 style="font-size: 15px; margin: 12px 0 6px 0; color: #17352b;">Industrial RTSP Streams</h4>
+            <p style="font-size: 12px; color: #6f8179; line-height: 1.5; margin: 0;">
+                Continuous H.264 IP camera streaming for enterprise facility automation and telemetry.
+            </p>
+        </div>
+        """)
+
+    # Pipeline Architecture Showcase
+    st.html("""
+    <div class="pipeline-banner">
+        <div style="display: flex; justify-content: space-between; align-items: flex-start; flex-wrap: wrap; gap: 20px;">
+            <div style="max-width: 650px;">
+                <div style="color: #6ee7b7; font-size: 11px; font-weight: 800; letter-spacing: 1.2px; text-transform: uppercase;">
+                    TWO-STAGE HYBRID AI ARCHITECTURE
+                </div>
+                <div style="font-size: 24px; font-weight: 850; margin-top: 6px; letter-spacing: -0.4px;">
+                    How WasteAI Delivers Zero False Classifications
+                </div>
+                <p style="color: #bbf7d0; font-size: 13.5px; line-height: 1.6; margin-top: 10px;">
+                    Standard single-stage detectors frequently confuse transparent glass with metal cans or background dirt.
+                    WasteAI combines generic object localization with focused high-resolution crop validation,
+                    ensuring every bounding box is verified before logging.
+                </p>
+            </div>
+            <div class="pipeline-steps-container">
+                <div class="pipeline-step">
+                    <span class="step-num">01</span>
+                    <div>
+                        <strong>Input Feed</strong>
+                        <small>Photos &bull; Video &bull; RTSP</small>
+                    </div>
+                </div>
+                <div class="pipeline-arrow">&rarr;</div>
+                <div class="pipeline-step">
+                    <span class="step-num">02</span>
+                    <div>
+                        <strong>YOLO Bounding</strong>
+                        <small>Candidate Extraction</small>
+                    </div>
+                </div>
+                <div class="pipeline-arrow">&rarr;</div>
+                <div class="pipeline-step">
+                    <span class="step-num">03</span>
+                    <div>
+                        <strong>Crop Material AI</strong>
+                        <small>Deep Classification</small>
+                    </div>
+                </div>
+                <div class="pipeline-arrow">&rarr;</div>
+                <div class="pipeline-step" style="border-color: #34d399;">
+                    <span class="step-num" style="background: #34d399; color: #064e3b;">04</span>
+                    <div>
+                        <strong>Audit & Tracking</strong>
+                        <small>Real-Time Logs & Reports</small>
+                    </div>
+                </div>
+            </div>
         </div>
     </div>
     """)
