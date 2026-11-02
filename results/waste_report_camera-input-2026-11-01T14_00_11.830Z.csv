@@ -1,0 +1,3 @@
+Item_ID,Category,Confidence,Type
+ITEM-01,CARDBOARD,0.59,Recyclable (Dry Waste)
+ITEM-02,PLASTIC,0.32,Recyclable (Dry Waste)
